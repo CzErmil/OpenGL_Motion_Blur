@@ -149,15 +149,18 @@
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\ShaderProgram.h" />
     <ClInclude Include="src\VertexBuffer.h" />
+    <ClInclude Include="src\VertexBufferLayout.h" />
+    <ClInclude Include="src\VertexArrayObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\BasicFragmentShaders.shader" />
+    <None Include="src\shaders\BasicFragmentShader.shader" />
     <None Include="src\Shaders\BasicVertexShader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

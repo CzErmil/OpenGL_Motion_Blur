@@ -17,7 +17,7 @@ public:
 	Shader(GLenum shaderType, string shaderSource);
 	~Shader();
 
-	inline GLenum GetShaderID() { return m_ShaderType; }
+	inline GLenum GetShaderID() { return m_ID; }
 	inline GLenum GetShaderType() { return m_ShaderType; }
 };
 

@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include "VertexBuffer.h"
 #include "ShaderProgram.h"
+#include "VertexArrayObject.h"
 
 int main(void)
 {
@@ -41,10 +41,16 @@ int main(void)
         0.25, 0.25
     };
 
+    VertexArrayObject vao;
+    vao.Bind();
+
     VertexBuffer vertexBaffer = VertexBuffer(&data, sizeof(data));
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-    vertexBaffer.UnBind();
+
+    VertexBufferLayout layout;
+
+    layout.Push<GLfloat>(2);
+
+    vao.AddVertexBuffer(vertexBaffer, layout);
 
     Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/BasicVertexShader.shader");
     Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/BasicFragmentShader.shader");

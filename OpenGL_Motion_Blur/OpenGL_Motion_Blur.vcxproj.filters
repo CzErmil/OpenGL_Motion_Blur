@@ -30,6 +30,9 @@
     <ClCompile Include="src\IndexBuffer.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="src\VertexArrayObject.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\VertexBuffer.h">
@@ -44,9 +47,15 @@
     <ClInclude Include="src\IndexBuffer.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\VertexBufferLayout.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexArrayObject.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\BasicFragmentShaders.shader" />
     <None Include="src\Shaders\BasicVertexShader.shader" />
+    <None Include="src\shaders\BasicFragmentShader.shader" />
   </ItemGroup>
 </Project>

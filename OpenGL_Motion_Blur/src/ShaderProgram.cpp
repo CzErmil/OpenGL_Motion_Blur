@@ -1,11 +1,14 @@
 #include "ShaderProgram.h"
 
+#include <vector>
+
 ShaderProgram::ShaderProgram(Shader vertexShader, Shader fragmentShader)
 {
 	m_ID = glCreateProgram();
-	glAttachShader(vertexShader.GetShaderID(), vertexShader.GetShaderType());
-	glAttachShader(fragmentShader.GetShaderID(), fragmentShader.GetShaderType());
+	glAttachShader(m_ID, vertexShader.GetShaderID());
+	glAttachShader(m_ID, fragmentShader.GetShaderID());
 	glLinkProgram(m_ID);
+	GLint isLinked = 0;
 }
 
 ShaderProgram::~ShaderProgram()
