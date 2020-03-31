@@ -2,11 +2,13 @@
 
 layout (location = 0) in vec4 position;
 
+uniform vec4 u_color;
+
 out vec4 vs_color;
 
 void main(void)
 {
 	gl_Position = position;
 
-	vs_color = vec4(0.6, 0.5, 0.2, 1.0);
+	vs_color = u_color;
 }

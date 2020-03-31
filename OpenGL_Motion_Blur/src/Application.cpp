@@ -58,6 +58,8 @@ int main(void)
     ShaderProgram program = ShaderProgram(vertexShader, fragmentShader);
     program.UseProgram();
 
+    program.SetUniform4f("u_color", 0.3f, 0.1f, 0.9f, 1.0f);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
