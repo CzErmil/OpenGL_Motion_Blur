@@ -148,6 +148,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\VertexArrayObject.cpp" />
   </ItemGroup>
@@ -155,6 +156,7 @@
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\ShaderProgram.h" />
+    <ClInclude Include="src\Vendor\stb_image\stb_image.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
     <ClInclude Include="src\VertexArrayObject.h" />
