@@ -36,6 +36,9 @@
     <ClCompile Include="src\Vendor\stb_image\stb_image.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\VertexBuffer.h">
@@ -59,9 +62,14 @@
     <ClInclude Include="src\Vendor\stb_image\stb_image.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\Texture.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BasicVertexShader.shader" />
     <None Include="src\shaders\BasicFragmentShader.shader" />
+    <None Include="src\shaders\FragmentShader_texture.shader" />
+    <None Include="src\shaders\VertexShader_texture.shader" />
   </ItemGroup>
 </Project>

@@ -148,6 +148,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\VertexArrayObject.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\ShaderProgram.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Vendor\stb_image\stb_image.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
@@ -164,6 +166,8 @@
   <ItemGroup>
     <None Include="src\shaders\BasicFragmentShader.shader" />
     <None Include="src\Shaders\BasicVertexShader.shader" />
+    <None Include="src\shaders\VertexShader_texture.shader" />
+    <None Include="src\shaders\FragmentShader_texture.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

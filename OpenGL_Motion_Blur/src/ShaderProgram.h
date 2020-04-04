@@ -16,6 +16,7 @@ public:
 
 	void UseProgram();
 
+	void SetUniform1i(const std::string& name, GLuint x1);
 	void SetUniform1f(const std::string& name, GLfloat x1);
 	void SetUniform2f(const std::string& name, GLfloat x1, GLfloat x2);
 	void SetUniform3f(const std::string& name, GLfloat x1, GLfloat x2, GLfloat x3);
