@@ -2,6 +2,11 @@
 
 #include <vector>
 
+ShaderProgram::ShaderProgram()
+{
+
+}
+
 ShaderProgram::ShaderProgram(Shader vertexShader, Shader fragmentShader)
 {
 	m_ID = glCreateProgram();

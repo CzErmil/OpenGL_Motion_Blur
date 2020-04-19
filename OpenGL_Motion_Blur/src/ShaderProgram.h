@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Shader.h"
 
 #include "GL/glew.h"
@@ -11,6 +13,7 @@ private:
 	std::unordered_map<std::string, GLint> m_UniformLocationCache;
 	GLint GetUniformLocation(const std::string& name);
 public:
+	ShaderProgram();
 	ShaderProgram(Shader vertexShader, Shader fragmentShader);
 	~ShaderProgram();
 

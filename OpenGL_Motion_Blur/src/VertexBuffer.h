@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GL/glew.h"
 
 class VertexBuffer
@@ -6,6 +8,7 @@ private:
 	GLuint m_ID;
 	GLuint m_Size;
 public:
+	VertexBuffer();
 	VertexBuffer(const void* data, unsigned int size);
 	~VertexBuffer();
 

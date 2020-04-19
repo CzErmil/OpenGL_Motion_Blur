@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GL/glew.h"
 #include <iostream>
 
@@ -11,6 +13,7 @@ private:
 	int m_BytesPerPixel;
 	unsigned char* m_LocalBuffer;
 public:
+	Texture();
 	Texture(const std::string& fileName);
 	~Texture();
 

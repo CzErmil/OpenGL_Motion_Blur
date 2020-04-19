@@ -5,13 +5,26 @@
 
 #include <iostream>
 
-#include "ShaderProgram.h"
-#include "VertexArrayObject.h"
-#include "Texture.h"
+#include "tests/TestClearColor.h"
+#include "tests/TestVertexBuffer.h"
+//#include "tests/BasicTest.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+
+void GLAPIENTRY
+MessageCallback(GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    const void* userParam)
+{
+    fprintf(stderr, "GL CALLBACK: %s message = %s\n",
+        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), message);
+}
 
 int main(void)
 {
@@ -49,158 +62,55 @@ int main(void)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    //glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(MessageCallback, 0);
+
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
 
-    const float data[]{
-        -1.0f, -1.0f,  1.0f, 0.0f,  0.5f,   ////1    WALLS     0.0f,  0.0f,  1.0f,
-         1.0f,  1.0f,  1.0f, 0.25f, 0.75f,  //              0.0f,  0.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f, 0.0f,  0.75f,  //              0.0f,  0.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f, 0.0f,  0.5f,   //              0.0f,  0.0f,  1.0f,
-         1.0f, -1.0f,  1.0f, 0.25f, 0.5f,   //              0.0f,  0.0f,  1.0f,
-         1.0f,  1.0f,  1.0f, 0.25f, 0.75f,  //              0.0f,  0.0f,  1.0f,
-         1.0f, -1.0f,  1.0f, 0.25f, 0.5f,     //2              1.0f,  0.0f,  0.0f,
-         1.0f,  1.0f, -1.0f, 0.5f,  0.75f,    //              1.0f,  0.0f,  0.0f,
-         1.0f,  1.0f,  1.0f, 0.25f, 0.75f,    //              1.0f,  0.0f,  0.0f,
-         1.0f, -1.0f,  1.0f, 0.25f, 0.5f,     //              1.0f,  0.0f,  0.0f,
-         1.0f, -1.0f, -1.0f, 0.5f,  0.5f,     //              1.0f,  0.0f,  0.0f,
-         1.0f,  1.0f, -1.0f, 0.5f,  0.75f,    //              1.0f,  0.0f,  0.0f,
-         1.0f, -1.0f, -1.0f, 0.5f,  0.5f,     //3              0.0f,  0.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f, 0.75f, 0.75f,    //              0.0f,  0.0f, -1.0f,
-         1.0f,  1.0f, -1.0f, 0.5f,  0.75f,    //              0.0f,  0.0f, -1.0f,
-         1.0f, -1.0f, -1.0f, 0.5f,  0.5f,     //              0.0f,  0.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f, 0.75f, 0.5f,     //              0.0f,  0.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f, 0.75f, 0.75f,    //              0.0f,  0.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f, 0.75f, 0.5f,     //4             -1.0f,  0.0f,  0.0f,
-        -1.0f,  1.0f,  1.0f, 1.0f,  0.75f,    //             -1.0f,  0.0f,  0.0f,
-        -1.0f,  1.0f, -1.0f, 0.75f, 0.75f,    //             -1.0f,  0.0f,  0.0f,
-        -1.0f, -1.0f, -1.0f, 0.75f, 0.5f,     //             -1.0f,  0.0f,  0.0f,
-        -1.0f, -1.0f,  1.0f, 1.0f,  0.5f,     //             -1.0f,  0.0f,  0.0f,
-        -1.0f,  1.0f,  1.0f, 1.0f,  0.75f,  ////             -1.0f,  0.0f,  0.0f,
-        -1.0f,  1.0f,  1.0f, 0.0f,  0.75f,   ////    TOP       0.0f,  1.0f,  0.0f,
-         1.0f,  1.0f, -1.0f, 0.25f, 1.0f,    //              0.0f,  1.0f,  0.0f,
-        -1.0f,  1.0f, -1.0f, 0.0f,  1.0f,    //              0.0f,  1.0f,  0.0f,
-        -1.0f,  1.0f,  1.0f, 0.0f,  0.75f,     //              0.0f,  1.0f,  0.0f,
-         1.0f,  1.0f,  1.0f, 0.25f, 0.75f,     //              0.0f,  1.0f,  0.0f,
-         1.0f,  1.0f, -1.0f, 0.25f, 1.0f,  ////              0.0f,  1.0f,  0.0f,
-        -1.0f, -1.0f,  1.0f, 0.0f,  0.25f,   ////    BOTTOM    0.0f, -1.0f,  0.0f,
-         1.0f, -1.0f, -1.0f, 0.25f, 0.5f,    //              0.0f, -1.0f,  0.0f,
-        -1.0f, -1.0f, -1.0f, 0.0f,  0.5f,    //              0.0f, -1.0f,  0.0f,
-        -1.0f, -1.0f,  1.0f, 0.0f,  0.25f,     //              0.0f, -1.0f,  0.0f,
-         1.0f, -1.0f,  1.0f, 0.25f, 0.25f,     //              0.0f, -1.0f,  0.0f,
-         1.0f, -1.0f, -1.0f, 0.25f, 0.5f  ////              0.0f, -1.0f,  0.0f,
-    };//36
+    test::Test* currentTest = nullptr;
+    test::TestMenu* testMenu = new test::TestMenu(currentTest);
+    currentTest = testMenu;
 
-   /*const float data[]{
-       -1.0f, -1.0f, 0.0f, 0.0f,
-        1.0f,  1.0f, 1.0f, 1.0f,
-       -1.0f,  1.0f, 0.0f, 1.0f,
-       -1.0f, -1.0f, 0.0f, 0.0f,
-        1.0f, -1.0f, 0.0f, 1.0f,
-        1.0f,  1.0f, 1.0f, 1.0f,
-    };*/
-
-    VertexArrayObject vao;
-    vao.Bind();
-
-    VertexBuffer vertexBaffer = VertexBuffer(&data, sizeof(data));
-
-    VertexBufferLayout layout;
-
-    layout.Push<GLfloat>(3);
-    //layout.Push<GLfloat>(3);
-    layout.Push<GLfloat>(2);
-
-    vao.AddVertexBuffer(vertexBaffer, layout);
-
-    Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/VertexShader_texture.shader");
-    Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/FragmentShader_texture.shader");
-    
-    ShaderProgram program = ShaderProgram(vertexShader, fragmentShader);
-    program.UseProgram();
-
-    glm::mat4 projection = glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 1.0f, 150.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 model_translation = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 model_rotation = glm::rotate(glm::mat4(1.0f), glm::radians(40.0f), glm::vec3(1, 0, 0));
-    model_rotation = glm::rotate(model_rotation, glm::radians(45.0f), glm::vec3(0, 1, 0));
-    glm::mat4 model_scaling = glm::scale(glm::mat4(1.0f), glm::vec3(1, 1, 1));
-
-    model = model * model_translation *model_rotation* model_scaling;
-
-    glm::mat4 MVP = projection * view * model;
-
-    Texture texture = Texture("res/textures/grass.png");
-    texture.Bind(0);
-
-    program.SetUniformMatrix4fv("u_MVP", MVP);
-    program.SetUniform4f("u_color", 0.3f, 0.1f, 0.9f, 1.0f);
-    program.SetUniform1i("u_texture", 0);
-    
-    while (GLenum error = glGetError())
-    {
-        std::cout << "OPENGL ERROR: " << error << std::endl;
-    }
-
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+    testMenu->RegisterTest<test::TestVertexBuffer>("Vertex Buffer");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
+        if (currentTest)
         {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
+            currentTest->OnUpdate(0.0f);
+            currentTest->OnRender();
+            ImGui::Begin("Test");
+            if (currentTest != testMenu && ImGui::Button("<-"))
+            {
+                delete currentTest;
+                currentTest=testMenu;
+            }
+            currentTest->OnImGuiRender();
             ImGui::End();
         }
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
 
-        /* Poll for and process events */
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    delete currentTest;
+    if (currentTest != testMenu)
+        delete testMenu;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

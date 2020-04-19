@@ -2,6 +2,11 @@
 
 #include "Vendor/stb_image/stb_image.h"
 
+Texture::Texture()
+{
+
+}
+
 Texture::Texture(const std::string& fileName)
 	: m_ID(0), m_FileName(fileName), m_Slot(0), m_Width(0), m_Height(0), m_BytesPerPixel(0), m_LocalBuffer(nullptr)
 {
