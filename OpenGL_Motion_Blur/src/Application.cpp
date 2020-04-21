@@ -7,7 +7,7 @@
 
 #include "tests/TestClearColor.h"
 #include "tests/TestVertexBuffer.h"
-//#include "tests/BasicTest.h"
+#include "tests/TestModel.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -28,7 +28,7 @@ MessageCallback(GLenum source,
 
 int main(void)
 {
-    static int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
+    static int WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900;
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -62,13 +62,12 @@ int main(void)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    //glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(MessageCallback, 0);
-
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    //glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(MessageCallback, 0);
 
     test::Test* currentTest = nullptr;
     test::TestMenu* testMenu = new test::TestMenu(currentTest);
@@ -76,12 +75,13 @@ int main(void)
 
     testMenu->RegisterTest<test::TestClearColor>("Clear Color");
     testMenu->RegisterTest<test::TestVertexBuffer>("Vertex Buffer");
+    testMenu->RegisterTest<test::TestModel>("Test Model");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
