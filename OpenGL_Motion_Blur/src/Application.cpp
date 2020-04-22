@@ -8,6 +8,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestVertexBuffer.h"
 #include "tests/TestModel.h"
+#include "tests/TestDepthBuffer.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -76,6 +77,7 @@ int main(void)
     testMenu->RegisterTest<test::TestClearColor>("Clear Color");
     testMenu->RegisterTest<test::TestVertexBuffer>("Vertex Buffer");
     testMenu->RegisterTest<test::TestModel>("Test Model");
+    testMenu->RegisterTest<test::TestDepthBuffer>("Test Depth Buffer");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
