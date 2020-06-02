@@ -9,6 +9,10 @@
 #include "tests/TestVertexBuffer.h"
 #include "tests/TestModel.h"
 #include "tests/TestDepthBuffer.h"
+#include "tests/TestMotionBlur.h"
+#include "tests/AccumulateMotionBlur.h"
+#include "tests/VectorMotionBlur.h"
+#include "tests/CameraMotionBlur.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -65,9 +69,11 @@ int main(void)
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);
 
     test::Test* currentTest = nullptr;
@@ -78,6 +84,10 @@ int main(void)
     testMenu->RegisterTest<test::TestVertexBuffer>("Vertex Buffer");
     testMenu->RegisterTest<test::TestModel>("Test Model");
     testMenu->RegisterTest<test::TestDepthBuffer>("Test Depth Buffer");
+    testMenu->RegisterTest<test::TestMotionBlur>("Test Motion Blur");
+    testMenu->RegisterTest<test::AccumulateMotionBlur>("Accumulate Motion Blur");
+    testMenu->RegisterTest<test::VectorMotionBlur>("Vector Motion Blur");
+    testMenu->RegisterTest<test::CameraMotionBlur>("Camera Motion Blur");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -99,13 +109,15 @@ int main(void)
                 delete currentTest;
                 currentTest=testMenu;
             }
+            glDisable(GL_DEBUG_OUTPUT);
             currentTest->OnImGuiRender();
             ImGui::End();
+            
         }
-
+        glDisable(GL_DEBUG_OUTPUT);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        glEnable(GL_DEBUG_OUTPUT);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
