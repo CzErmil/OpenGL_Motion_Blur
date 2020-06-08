@@ -9,6 +9,8 @@
 #include "ShaderProgram.h"
 #include "VertexArrayObject.h"
 #include "Texture.h"
+#include "Inputs.h"
+#include "Camera.h"
 
 namespace test {
 
@@ -29,7 +31,11 @@ namespace test {
 		float m_ModelRotationXYZ[3];
 		float m_ModelTranslationXYZ[3];
 		float m_ModelScalingXYZ[3];
-
+		float m_CurentTime;
+		float m_LastTime;
+		float m_DeltaTime;
+		Inputs m_Inputs;
+		Camera m_Camera;
 	public:
 		TestModel();
 		~TestModel();
