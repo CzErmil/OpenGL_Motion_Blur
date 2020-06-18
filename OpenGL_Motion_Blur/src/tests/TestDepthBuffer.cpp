@@ -79,24 +79,7 @@ namespace test {
         m_Proj = glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 1.0f, 150.0f);
         m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f)); 
     
-        glGenFramebuffers(1, &depthMapFBO);
-
-        glGenTextures(1, &depthMap);
-        glActiveTexture(GL_TEXTURE0);
-
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-           1600, 900, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-        glDrawBuffer(GL_NONE);
-        glReadBuffer(GL_NONE);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        m_FrameBuffer = std::make_unique<FrameBuffer>(Attachment::DEPTH, 1600, 900);
 	}
 
     TestDepthBuffer::~TestDepthBuffer()
@@ -106,11 +89,6 @@ namespace test {
 
 	void TestDepthBuffer::OnUpdate(float deltaTime)
 	{
-
-	}
-
-	void TestDepthBuffer::OnRender()
-	{     
         m_ModelTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(m_ModelTranslationXYZ[0], m_ModelTranslationXYZ[1], m_ModelTranslationXYZ[2]));
 
         m_ModelRotation = glm::rotate(glm::mat4(1.0f), glm::radians(m_ModelRotationXYZ[0]), glm::vec3(1, 0, 0));
@@ -121,17 +99,20 @@ namespace test {
 
         m_Model = glm::mat4(1.0f) * m_ModelTranslation * m_ModelRotation * m_ModelScaling;
         m_MVP = m_Proj * m_View * m_Model;
-        
+	}
+
+	void TestDepthBuffer::OnRender()
+	{       
         m_Program[0]->UseProgram();
         m_Program[0]->SetUniformMatrix4fv("u_MVP", m_MVP);
         
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        m_FrameBuffer->Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        m_FrameBuffer->Unbind();
         
+        m_FrameBuffer->BindTexture();
         m_Program[1]->UseProgram();
-        glBindTexture(GL_TEXTURE_2D, depthMap);
         m_Program[1]->SetUniform1i("u_texture",0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDrawArrays(GL_TRIANGLES, 0, 6);

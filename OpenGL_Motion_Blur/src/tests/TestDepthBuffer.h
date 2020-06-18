@@ -9,6 +9,7 @@
 #include "ShaderProgram.h"
 #include "VertexArrayObject.h"
 #include "Texture.h"
+#include "FrameBuffer.h"
 
 namespace test {
 
@@ -19,6 +20,7 @@ namespace test {
 		std::unique_ptr<VertexBuffer> m_VertexBaffer;
 		std::unique_ptr<ShaderProgram> m_Program[2];
 		std::unique_ptr<Texture> m_Texture;
+		std::unique_ptr<FrameBuffer> m_FrameBuffer;
 		glm::mat4 m_Proj;
 		glm::mat4 m_View;
 		glm::mat4 m_Model;
@@ -29,8 +31,6 @@ namespace test {
 		float m_ModelRotationXYZ[3];
 		float m_ModelTranslationXYZ[3];
 		float m_ModelScalingXYZ[3];
-		unsigned int depthMapFBO;
-		unsigned int depthMap;
 	public:
 		TestDepthBuffer();
 		~TestDepthBuffer();
