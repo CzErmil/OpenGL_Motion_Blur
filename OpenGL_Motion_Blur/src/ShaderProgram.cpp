@@ -2,11 +2,6 @@
 
 #include <vector>
 
-ShaderProgram::ShaderProgram()
-{
-
-}
-
 ShaderProgram::ShaderProgram(Shader vertexShader, Shader fragmentShader)
 {
 	m_ID = glCreateProgram();
@@ -14,6 +9,16 @@ ShaderProgram::ShaderProgram(Shader vertexShader, Shader fragmentShader)
 	glAttachShader(m_ID, fragmentShader.GetShaderID());
 	glLinkProgram(m_ID);
 }
+
+ShaderProgram::ShaderProgram(Shader vertexShader, Shader geometryShader, Shader fragmentShader)
+{
+	m_ID = glCreateProgram();
+	glAttachShader(m_ID, vertexShader.GetShaderID());
+	glAttachShader(m_ID, geometryShader.GetShaderID());
+	glAttachShader(m_ID, fragmentShader.GetShaderID());
+	glLinkProgram(m_ID);
+}
+
 
 ShaderProgram::~ShaderProgram()
 {
@@ -59,6 +64,11 @@ void ShaderProgram::SetUniform2f(const std::string& name, GLfloat x1, GLfloat x2
 void ShaderProgram::SetUniform3f(const std::string& name, GLfloat x1, GLfloat x2, GLfloat x3)
 {
 	glUniform3f(GetUniformLocation(name), x1, x2, x3);
+}
+
+void ShaderProgram::SetUniform3fv(const std::string& name, glm::vec3 v)
+{
+	glUniform3fv(GetUniformLocation(name), 1, &v[0]);
 }
 
 void ShaderProgram::SetUniform4f(const std::string& name, GLfloat x1, GLfloat x2, GLfloat x3, GLfloat x4)

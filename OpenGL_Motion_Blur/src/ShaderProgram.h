@@ -13,8 +13,8 @@ private:
 	std::unordered_map<std::string, GLint> m_UniformLocationCache;
 	GLint GetUniformLocation(const std::string& name);
 public:
-	ShaderProgram();
 	ShaderProgram(Shader vertexShader, Shader fragmentShader);
+	ShaderProgram(Shader vertexShader, Shader geometryShader, Shader fragmentShader);
 	~ShaderProgram();
 
 	void UseProgram();
@@ -23,6 +23,7 @@ public:
 	void SetUniform1f(const std::string& name, GLfloat x1);
 	void SetUniform2f(const std::string& name, GLfloat x1, GLfloat x2);
 	void SetUniform3f(const std::string& name, GLfloat x1, GLfloat x2, GLfloat x3);
+	void SetUniform3fv(const std::string& name, glm::vec3 v);
 	void SetUniform4f(const std::string& name, GLfloat x1, GLfloat x2, GLfloat x3, GLfloat x4);
 	void SetUniformMatrix4fv(const std::string& name, glm::mat4 m);
 };

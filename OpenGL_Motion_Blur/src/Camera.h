@@ -7,11 +7,11 @@ class Camera
 {
 private:
 	GLFWwindow* m_Window;
-	float* m_DeltaTime;
+	double* m_DeltaTime;
 	int m_Width, m_Height;
 	glm::mat4 m_Proj;
 	float m_Fov, m_Aspect, m_Near, m_Far;
-	short m_Forward, m_Backward, m_Left, m_Right;
+	short m_Forward, m_Backward, m_Left, m_Right, m_Up, m_Down;
 	short m_MouseMiddleButton;
 	glm::vec3 m_Position;
 	glm::vec3 m_vFront, m_vUp, m_vRight, m_vWorldUp;
@@ -20,10 +20,11 @@ private:
 	float m_MouseSensitivity;
 public:
 
-	Camera(float* deltaTime);
+	Camera(double* deltaTime);
 
 	glm::mat4 getView();
 	inline glm::mat4 getProj() { return m_Proj; }
+	inline glm::vec3 getPosition() { return m_Position; }
 
 	void updateCamera();
 
@@ -31,6 +32,8 @@ public:
 	void setBackward(int v) { m_Backward = v; }
 	void setLeft(int v) { m_Left = v; }
 	void setRight(int v) { m_Right = v; }
+	void setUp(int v) { m_Up = v; }
+	void setDown(int v) { m_Down = v; }
 	void setMouseMiddleButton(int v) { m_MouseMiddleButton = v; }
 
 	void processMouseMovment(double x, double y, double lastX, double lastY);

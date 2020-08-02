@@ -36,7 +36,7 @@ namespace test {
 
 	}
 
-	void TestVertexBuffer::OnUpdate(float deltaTime)
+	void TestVertexBuffer::OnUpdate(double deltaTime)
 	{
 
 	}

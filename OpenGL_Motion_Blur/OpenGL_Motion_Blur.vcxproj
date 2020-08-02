@@ -85,9 +85,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_USE_MATH_DEFINES;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\;src\Vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,9 +114,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_USE_MATH_DEFINES;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src\Vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\;src\Vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,30 +144,93 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\FrameBuffer.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
+    <ClCompile Include="src\Inputs.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Sphere.cpp" />
+    <ClCompile Include="src\tests\AccumulateMotionBlur.cpp" />
+    <ClCompile Include="src\tests\CameraMotionBlur.cpp" />
+    <ClCompile Include="src\tests\TestDepthBuffer.cpp" />
+    <ClCompile Include="src\tests\TestModel.cpp" />
+    <ClCompile Include="src\tests\Test.cpp" />
+    <ClCompile Include="src\tests\VectorMotionBlur.cpp" />
+    <ClCompile Include="src\tests\PerObjectMotionBlur.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Vendor\imgui\imgui.cpp" />
+    <ClCompile Include="src\Vendor\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\Vendor\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\Vendor\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Vendor\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\FrameBuffer.h" />
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\IndexBuffer.h" />
+    <ClInclude Include="src\Inputs.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\ShaderProgram.h" />
+    <ClInclude Include="src\Sphere.h" />
+    <ClInclude Include="src\tests\AccumulateMotionBlur.h" />
+    <ClInclude Include="src\tests\CameraMotionBlur.h" />
+    <ClInclude Include="src\tests\PerObjectMotionBlur.h" />
+    <ClInclude Include="src\tests\TestDepthBuffer.h" />
+    <ClInclude Include="src\tests\TestModel.h" />
+    <ClInclude Include="src\tests\Test.h" />
+    <ClInclude Include="src\tests\VectorMotionBlur.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Vendor\imgui\imconfig.h" />
+    <ClInclude Include="src\Vendor\imgui\imgui.h" />
+    <ClInclude Include="src\Vendor\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Vendor\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Vendor\imgui\imgui_internal.h" />
+    <ClInclude Include="src\Vendor\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\Vendor\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\Vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Vendor\stb_image\stb_image.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
     <ClInclude Include="src\VertexArrayObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\DrawLines_geometry.glsl" />
+    <None Include="src\shaders\DrawLines_vertex.glsl" />
+    <None Include="src\shaders\DrawLines_fragment.glsl" />
+    <None Include="src\shaders\FragmentShader_texture_alpha.shader" />
+    <None Include="src\shaders\glAccum.fragment_shader" />
     <None Include="src\shaders\BasicFragmentShader.shader" />
     <None Include="src\Shaders\BasicVertexShader.shader" />
+    <None Include="src\shaders\FragmentShader.shader" />
+    <None Include="src\shaders\FragmentShader_DepthBuffer.shader" />
+    <None Include="src\shaders\CameraMotionBlur_Fragment.glsl" />
+    <None Include="src\shaders\CameraMotionBlur_Vertex.glsl" />
+    <None Include="src\shaders\PerObjectMotionBlur_Fragment.shader" />
+    <None Include="src\shaders\RenderTexture.fragment_shader" />
+    <None Include="src\shaders\RenderTexture.vertex_shader" />
+    <None Include="src\shaders\RenderTexture_VectroMotionBlur.fragment_shader" />
+    <None Include="src\shaders\RenderTexture_VectroMotionBlur.vertex_shader" />
+    <None Include="src\shaders\TestModel_fragment.glsl" />
+    <None Include="src\shaders\TestModel_vertex.glsl" />
+    <None Include="src\shaders\TestMotionBlur_Fragment.shader" />
+    <None Include="src\shaders\TestMotionBlur_Vector.shader" />
+    <None Include="src\shaders\VelocityBuffer_Fragment.shader" />
+    <None Include="src\shaders\VelocityBuffer_Vertex.shader" />
+    <None Include="src\shaders\VertexShader.shader" />
+    <None Include="src\shaders\VertexShader_DepthBuffer.shader" />
     <None Include="src\shaders\VertexShader_texture.shader" />
     <None Include="src\shaders\FragmentShader_texture.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\grass.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

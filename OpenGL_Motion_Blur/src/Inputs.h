@@ -20,6 +20,8 @@ public:
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 	void setWSADKeyCallbacks(std::function<void(int)> wCallback, std::function<void(int)> sCallback, std::function<void(int)> aCallback, std::function<void(int)> dCallback);
+	void setSpaceKeyCallback(std::function<void(int)> spaceCallback);
+	void setShiftKeyCallback(std::function<void(int)> shiftCallback);
 	void setCursorCullbuck(std::function<void(double, double, double, double)> cursorCallback);
 	void setMouseButtonCallbacks(int button, std::function<void(int)> buttonCallback);
 };

@@ -10,5 +10,10 @@ private:
 public:
 	Sphere(int sectros, int stack, float radius, Surface surface);
 	~Sphere() {};
+
+private:
+	void calculateSmoothSphere();
+	void calculateFlatSphere();
+	void calculateFlatSurface(Vertex& v1, Vertex& v2, Vertex& v3);
 };
 

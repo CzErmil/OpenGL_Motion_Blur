@@ -50,6 +50,16 @@ void Inputs::setWSADKeyCallbacks(std::function<void(int)> wCallback, std::functi
 	m_KeyCallbucks[GLFW_KEY_D] = dCallback;
 }
 
+void Inputs::setSpaceKeyCallback(std::function<void(int)> spaceCallback)
+{
+	m_KeyCallbucks[GLFW_KEY_SPACE] = spaceCallback;
+}
+
+void Inputs::setShiftKeyCallback(std::function<void(int)> shiftCallback)
+{
+	m_KeyCallbucks[GLFW_KEY_LEFT_SHIFT] = shiftCallback;
+}
+
 void Inputs::setCursorCullbuck(std::function<void(double, double, double, double)> c)
 {
 	m_CursorPosCallbuck = c;

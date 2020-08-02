@@ -6,7 +6,9 @@ Model::Model() :
 	m_ModelRotationMatrix(glm::mat4(1)),
 	m_ModelScaleMatrix(glm::mat4(1))
 {
-
+	m_VertexBufferLayout.Push<float>(3);
+	m_VertexBufferLayout.Push<float>(3);
+	m_VertexBufferLayout.Push<float>(2);
 }
 
 void Model::move(float x, float y, float z)

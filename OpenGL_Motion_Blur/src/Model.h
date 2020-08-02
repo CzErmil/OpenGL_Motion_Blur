@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include "glm/gtx/transform.hpp"
+#include "VertexBufferLayout.h"
 
 struct Vertex
 {
@@ -26,6 +27,7 @@ protected:
 	glm::mat4 m_ModelRotationMatrix;
 	glm::mat4 m_ModelScaleMatrix;
 	glm::mat4 m_ModelMatrix;
+	VertexBufferLayout m_VertexBufferLayout;
 public:
 	Model();
 	~Model() {};
@@ -41,4 +43,7 @@ public:
 	inline std::vector<unsigned int> getIndecies() { return m_Indecies; }
 	inline glm::mat4 getModelMatrix() { return m_ModelPositionMatrix * m_ModelRotationMatrix * m_ModelScaleMatrix; }
 	inline int getSize() { return m_Vertices.size() * sizeof(Vertex); };
+	inline void* getData() { return m_Vertices.data(); };
+	inline int getCount() { return m_Indecies.size(); };
+	inline VertexBufferLayout getLayout() { return m_VertexBufferLayout; };
 };

@@ -1,11 +1,11 @@
 #include "Camera.h"
 
-Camera::Camera(float* deltaTime)
+Camera::Camera(double* deltaTime)
 	:m_Fov(45), m_Near(0.1), m_Far(100),
 	m_Position(0, 0, 5),
 	m_vWorldUp(0, 1, 0),
 	m_Yaw(-90.0f), m_Pitch(0.0f),
-	m_MovementSpeed(2.5f), m_MouseSensitivity(0.3f)
+	m_MovementSpeed(2.5f), m_MouseSensitivity(0.2f)
 {
 	m_Window = glfwGetCurrentContext();
 	glfwGetWindowSize(m_Window, &m_Width, &m_Height);
@@ -32,6 +32,12 @@ void Camera::updateCamera()
 
 	if (m_Right)
 		m_Position += m_vRight * velocity;
+
+	if (m_Up)
+		m_Position += m_vUp * velocity;
+
+	if(m_Down)
+		m_Position -= m_vUp * velocity;
 }
 
 void Camera::processMouseMovment(double x, double y, double lastX, double lastY)

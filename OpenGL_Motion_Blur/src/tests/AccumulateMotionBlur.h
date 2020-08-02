@@ -8,7 +8,12 @@
 
 #include "ShaderProgram.h"
 #include "VertexArrayObject.h"
+#include "IndexBuffer.h"
 #include "Texture.h"
+#include "FrameBuffer.h"
+#include "Camera.h"
+#include "Inputs.h"
+#include "Sphere.h"
 
 namespace test {
 
@@ -17,8 +22,13 @@ namespace test {
 	private:
 		std::unique_ptr<VertexArrayObject> m_VAO;
 		std::unique_ptr<VertexBuffer> m_VertexBaffer;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		std::unique_ptr<ShaderProgram> m_Program[3];
 		std::unique_ptr<Texture> m_Texture;
+		std::unique_ptr<FrameBuffer> m_FrameBuffer[2];
+		std::unique_ptr<Sphere> m_Sphere;
+		Camera m_Camera;
+		Inputs m_Inputs;
 		glm::mat4 m_Proj;
 		glm::mat4 m_View;
 		glm::mat4 m_Model;
@@ -30,23 +40,22 @@ namespace test {
 		float m_ModelRotationXYZ[3];
 		float m_ModelTranslationXYZ[3];
 		float m_ModelScalingXYZ[3];
-		float m_PrevModelRotationXYZ[3];
-		float m_PrevModelTranslationXYZ[3];
-		float m_PrevModelScalingXYZ[3];
-		unsigned int m_ColorBufferFBO;
-		unsigned int m_ColorBuffer;		
-		unsigned int m_ColorBufferFBO2;
-		unsigned int m_ColorBuffer2;
-		float m_CurrentTime;
+		double m_DeltaTime;
+		double m_sumTime;
 		int m_SwapInterval;
 		int m_MotionBlurLevel;
+		float m_MotionBlurPower;
 		float m_CubeSpeed;
+		bool m_Pause;
 	public:
 		AccumulateMotionBlur();
 		~AccumulateMotionBlur();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(double deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+	
+	private:
+		void calculatePosition(double deltaTime);
 	};
 }

@@ -4,20 +4,22 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include <functional>
 
 namespace test {
     
     AccumulateMotionBlur::AccumulateMotionBlur() :
+        m_DeltaTime(0),
+        m_Camera(&m_DeltaTime),
         m_ModelRotationXYZ{ 0.0f,0.0f,0.0f },
         m_ModelTranslationXYZ{ 0.0f,0.0f,-3.0f },
         m_ModelScalingXYZ{ 1.0f,1.0f,1.0f },
-        m_PrevModelRotationXYZ{ 0.0f,0.0f,0.0f },
-        m_PrevModelTranslationXYZ{ 0.0f,0.0f,-3.0f },
-        m_PrevModelScalingXYZ{ 1.0f,1.0f,1.0f },
-        m_CurrentTime(0),
         m_SwapInterval(1),
         m_CubeSpeed(3),
-        m_MotionBlurLevel(10)
+        m_MotionBlurLevel(10),
+        m_MotionBlurPower(1),
+        m_sumTime(0),
+        m_Pause(0)
 	{
         static int WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900;
 
@@ -64,20 +66,26 @@ namespace test {
              1.0f, -1.0f,  1.0f, 0.25f, 0.25f   ////              0.0f, -1.0f,  0.0f,
         };//36
 
+        m_Sphere = std::make_unique<Sphere>(50,50,2,Surface::Smooth);
+
         m_VAO = std::make_unique<VertexArrayObject>();
         m_VAO->Bind();
 
-        m_VertexBaffer = std::make_unique<VertexBuffer>(&data, sizeof(data));
-        
+        m_VertexBaffer = std::make_unique<VertexBuffer>(m_Sphere->getVertices().data(), m_Sphere->getVertices().size() * sizeof(Vertex));
+
         VertexBufferLayout layout;
 
+        layout.Push<GLfloat>(3);
         layout.Push<GLfloat>(3);
         layout.Push<GLfloat>(2);
 
         m_VAO->AddVertexBuffer(*m_VertexBaffer, layout);
 
-        Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/VertexShader_texture.shader");
-        Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/FragmentShader_texture.shader");
+        m_IndexBuffer = make_unique<IndexBuffer>(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
+        m_IndexBuffer->Bind();
+
+        Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/TestModel_vertex.glsl");
+        Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/TestModel_fragment.glsl");
 
         m_Program[0] = std::make_unique<ShaderProgram>(vertexShader, fragmentShader);
 
@@ -91,158 +99,115 @@ namespace test {
 
         m_Program[2] = std::make_unique<ShaderProgram>(vertexShader3, fragmentShader3);
 
-        m_Proj = glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 1.0f, 150.0f);
-        m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f)); 
+        m_Proj = m_Camera.getProj();
 
-        m_Texture = std::make_unique<Texture>("res/textures/grass.png");
+        std::function<void(int)> w = std::bind(&Camera::setForward, &m_Camera, std::placeholders::_1);
+        std::function<void(int)> s = std::bind(&Camera::setBackward, &m_Camera, std::placeholders::_1);
+        std::function<void(int)> a = std::bind(&Camera::setLeft, &m_Camera, std::placeholders::_1);
+        std::function<void(int)> d = std::bind(&Camera::setRight, &m_Camera, std::placeholders::_1);
+        std::function<void(int)> space = std::bind(&Camera::setUp, &m_Camera, std::placeholders::_1);
+        std::function<void(int)> shift = std::bind(&Camera::setDown, &m_Camera, std::placeholders::_1);
+        std::function<void(int)> mouseMiddleButton = std::bind(&Camera::setMouseMiddleButton, &m_Camera, std::placeholders::_1);
+        std::function<void(double, double, double, double)>  cursor = std::bind(&Camera::processMouseMovment, &m_Camera, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+
+        m_Inputs.setWSADKeyCallbacks(w, s, a, d);
+        m_Inputs.setSpaceKeyCallback(space);
+        m_Inputs.setShiftKeyCallback(shift);
+        m_Inputs.setMouseButtonCallbacks(GLFW_MOUSE_BUTTON_3, mouseMiddleButton);
+        m_Inputs.setCursorCullbuck(cursor);
+
+        m_Texture = std::make_unique<Texture>("res/textures/earth.bmp", GL_LINEAR);
         m_Texture->Bind(0);
 
         m_Program[0]->UseProgram();
-        m_Program[0]->SetUniform4f("u_color", 0.3f, 0.1f, 0.9f, 1.0f);
         m_Program[0]->SetUniform1i("u_texture", 0);
 
-        m_CurrentTime = glfwGetTime();
+        m_FrameBuffer[0] = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA8, WINDOW_WIDTH, WINDOW_HEIGHT);
+        m_FrameBuffer[0]->SetDepthBuffer();
 
-        m_PrevModelTranslationXYZ[0] = sin(m_CurrentTime * m_CubeSpeed) * 3;
-        m_PrevModelTranslationXYZ[1] = cos(m_CurrentTime * m_CubeSpeed) * 3;
-
-        m_ColorBufferFBO = 0;
-        glGenFramebuffers(1, &m_ColorBufferFBO);
-
-        glActiveTexture(GL_TEXTURE1);
-        glGenTextures(1, &m_ColorBuffer);
-
-        glBindTexture(GL_TEXTURE_2D, m_ColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1600, 900, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, m_ColorBufferFBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorBuffer, 0);
-
-        GLuint depthrenderbuffer;
-        glGenRenderbuffers(1, &depthrenderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1600, 900);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
-        GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-        glDrawBuffers(1, DrawBuffers);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        m_ColorBufferFBO2 = 0;
-        glGenFramebuffers(1, &m_ColorBufferFBO2);
-
-        glActiveTexture(GL_TEXTURE2);
-        glGenTextures(1, &m_ColorBuffer2);
-
-        glBindTexture(GL_TEXTURE_2D, m_ColorBuffer2);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1600, 900, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, m_ColorBufferFBO2);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorBuffer2, 0);
-
+        m_FrameBuffer[1] = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA16F, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
 
     AccumulateMotionBlur::~AccumulateMotionBlur()
 	{
         glfwSwapInterval(1);
 
-        glDeleteTextures(1, &m_ColorBuffer);
-        glDeleteFramebuffers(1, &m_ColorBufferFBO);
-
-        glDeleteTextures(1, &m_ColorBuffer2);
-        glDeleteFramebuffers(1, &m_ColorBufferFBO2);
-
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	void AccumulateMotionBlur::OnUpdate(float deltaTime)
+	void AccumulateMotionBlur::OnUpdate(double deltaTime)
 	{
-
+        m_DeltaTime = deltaTime;
+        m_View = m_Camera.getView();
 	}
 
-    float split1(float a, float b, int iteration, int count)
+    void AccumulateMotionBlur::calculatePosition(double deltaTime)
     {
-        return b + (iteration* (a-b) / count);
+        m_sumTime += deltaTime * m_CubeSpeed;
+        m_ModelTranslationXYZ[0] = sinf(m_sumTime)*3;
+        m_ModelTranslationXYZ[1] = cosf(m_sumTime)*3;
+        
+        m_Sphere->setPosition(m_ModelTranslationXYZ[0], m_ModelTranslationXYZ[1], m_ModelTranslationXYZ[2]);
+		m_Sphere->rotate(m_ModelRotationXYZ[0] * (float)deltaTime * 3, m_ModelRotationXYZ[1] * (float)deltaTime * 3, m_ModelRotationXYZ[2] * (float)deltaTime * 3);
     }
 
 	void AccumulateMotionBlur::OnRender()
 	{
-        m_CurrentTime = glfwGetTime();
-        
-        m_ModelTranslationXYZ[0] = sin(m_CurrentTime * m_CubeSpeed)*3;
-        m_ModelTranslationXYZ[1] = cos(m_CurrentTime * m_CubeSpeed)*3;
- 
-        glBindFramebuffer(GL_FRAMEBUFFER, m_ColorBufferFBO2);
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        int count = m_MotionBlurLevel;
-        for (int i = 0; i < count; i++)
+        if(!m_Pause)
         {
-            glBindFramebuffer(GL_FRAMEBUFFER, m_ColorBufferFBO);
-
-            glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
+            m_FrameBuffer[1]->Bind();
+            glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            m_FrameBuffer[1]->Unbind();
 
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            int count = m_MotionBlurLevel;
+            for (int i = 0; i < count; i++)
+            {
+                m_FrameBuffer[0]->Bind();
 
-            glClear(GL_DEPTH_BUFFER_BIT);
-            m_ModelTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(
-                split1(m_ModelTranslationXYZ[0], m_PrevModelTranslationXYZ[0], i, count), 
-                split1(m_ModelTranslationXYZ[1], m_PrevModelTranslationXYZ[1], i, count), 
-                split1(m_ModelTranslationXYZ[2], m_PrevModelTranslationXYZ[2], i, count)));
+                glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            m_ModelRotation = glm::rotate(glm::mat4(1.0f), glm::radians(split1(m_ModelRotationXYZ[0], m_PrevModelRotationXYZ[0], i, count)), glm::vec3(1, 0, 0));
-            m_ModelRotation = glm::rotate(m_ModelRotation, glm::radians(split1(m_ModelRotationXYZ[1], m_PrevModelRotationXYZ[1], i, count)), glm::vec3(0, 1, 0));
-            m_ModelRotation = glm::rotate(m_ModelRotation, glm::radians(split1(m_ModelRotationXYZ[2], m_PrevModelRotationXYZ[2], i, count)), glm::vec3(0, 0, 1));
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            m_ModelScaling = glm::scale(glm::mat4(1.0f), glm::vec3(
-                split1(m_ModelScalingXYZ[0], m_PrevModelScalingXYZ[0], i, count),
-                split1(m_ModelScalingXYZ[1], m_PrevModelScalingXYZ[1], i, count),
-                split1(m_ModelScalingXYZ[2], m_PrevModelScalingXYZ[2], i, count)));
+                if(i==0)
+                    calculatePosition(-((m_DeltaTime * m_MotionBlurPower) - m_DeltaTime) / 2);
 
-            m_Model = glm::mat4(1.0f) * m_ModelTranslation * m_ModelRotation * m_ModelScaling;
-            m_MVP = m_Proj * m_View * m_Model;
+                calculatePosition(m_DeltaTime*m_MotionBlurPower / count);
 
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, m_ColorBuffer);
-            m_Texture->Bind(0);
-            m_Program[0]->UseProgram();
-            m_Program[0]->SetUniformMatrix4fv("u_MVP", m_MVP);
-            m_Program[0]->SetUniform1i("u_texture", 0);
-            m_Program[0]->SetUniform1f("u_alpha", 1.0f/count);
-            
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+                m_Model = m_Sphere->getModelMatrix();
+                m_MVP = m_Proj * m_View * m_Model;
 
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                m_FrameBuffer[0]->BindTexture(1);
+                m_Texture->Bind(0);
+                m_Program[0]->UseProgram();
+                m_Program[0]->SetUniformMatrix4fv("u_MVP", m_MVP);
+                m_Program[0]->SetUniformMatrix4fv("u_Model", m_Model);
+                m_Program[0]->SetUniform3fv("u_CameraPos", glm::vec3(0.0f, 0.0f, -5.0f));
 
+                glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
-            glBindFramebuffer(GL_FRAMEBUFFER, m_ColorBufferFBO2);
+                m_FrameBuffer[0]->Unbind();
 
-            glClear(GL_DEPTH_BUFFER_BIT);
-            glBlendFunc(GL_ONE,GL_ONE);
+                m_FrameBuffer[1]->Bind();
 
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, m_ColorBuffer2);
-            m_Program[1]->UseProgram();
-            m_Program[1]->SetUniform1i("u_texture", 1);
-            m_Program[1]->SetUniform1f("u_alpha", 1.0f / count);
+                glClear(GL_DEPTH_BUFFER_BIT);
+                glBlendFunc(GL_ONE, GL_ONE);
 
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+                m_FrameBuffer[1]->BindTexture(2);
+                m_Program[1]->UseProgram();
+                m_Program[1]->SetUniform1i("u_texture", 1);
+                m_Program[1]->SetUniform1f("u_alpha", 1.0f / count);
 
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                m_FrameBuffer[1]->Unbind();
+
+                if (i == count-1)
+                    calculatePosition(-((m_DeltaTime * m_MotionBlurPower) - m_DeltaTime) / 2);
+            }
         }
-
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -251,29 +216,23 @@ namespace test {
         m_Program[2]->UseProgram();
         m_Program[2]->SetUniform1i("u_texture", 2);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
-        m_PrevModelTranslationXYZ[0] = m_ModelTranslationXYZ[0];
-        m_PrevModelTranslationXYZ[1] = m_ModelTranslationXYZ[1];
-        m_PrevModelTranslationXYZ[2] = m_ModelTranslationXYZ[2];
-
-        m_PrevModelRotationXYZ[0] = m_ModelRotationXYZ[0];
-        m_PrevModelRotationXYZ[1] = m_ModelRotationXYZ[1];
-        m_PrevModelRotationXYZ[2] = m_ModelRotationXYZ[2];
-        
-        m_PrevModelScalingXYZ[0] = m_ModelScalingXYZ[0];
-        m_PrevModelScalingXYZ[1] = m_ModelScalingXYZ[1];
-        m_PrevModelScalingXYZ[2] = m_ModelScalingXYZ[2];
 	}
 
 	void AccumulateMotionBlur::OnImGuiRender()
 	{
        {
-            ImGui::SliderFloat3("Model rotation", m_ModelRotationXYZ, -180.0f, 180.0f, "%.0f", 1.0f);
-            ImGui::SliderFloat3("Model scaling", m_ModelScalingXYZ, -3.0f, 3.0f, "%.1f", 2.0f);
+            ImGui::SliderFloat3("Model rotation", m_ModelRotationXYZ, -100.0f, 100.0f, "%.1f", 1.0f);
 
             ImGui::SliderInt("Motion Blur Level", &m_MotionBlurLevel , 1, 100, "%d");
             
+            ImGui::SliderFloat("Motion Blur Power", &m_MotionBlurPower, 1.0f, 3.0f, "%.2f", 1.0f);
+
+            if (ImGui::RadioButton("No limit", m_SwapInterval == 0))
+            {
+                m_SwapInterval = 0;
+                glfwSwapInterval(m_SwapInterval);
+            } ImGui::SameLine();
+
             if (ImGui::RadioButton("60fps", m_SwapInterval == 1))
             {
                 m_SwapInterval = 1;
@@ -298,13 +257,15 @@ namespace test {
                 glfwSwapInterval(m_SwapInterval);
             }
 
-            ImGui::SliderFloat("Cube Speed", &m_CubeSpeed, 0.1, 10, "%.1f", 2.0f);
+            ImGui::SliderFloat("Cube Speed", &m_CubeSpeed, 0, 10, "%.1f", 1.0f);
 
             if (ImGui::Button("Reset"))
             {
                 m_ModelRotationXYZ[0] = m_ModelRotationXYZ[1] = m_ModelRotationXYZ[2] = 0.0f;
-                m_ModelScalingXYZ[0] = m_ModelScalingXYZ[1] = m_ModelScalingXYZ[2] = 1.0f;
-            }
+                m_Sphere->setRotation(0, 0, 0);
+            }            
+
+            ImGui::Checkbox("Pause",&m_Pause);       
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         }

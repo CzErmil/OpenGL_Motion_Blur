@@ -100,33 +100,6 @@ namespace test {
 
         m_PrevModelTranslationXYZ[0] = sin(m_CurrentTime * m_CubeSpeed) * 3;
         m_PrevModelTranslationXYZ[1] = cos(m_CurrentTime * m_CubeSpeed) * 3;
-
-        /*m_ColorBufferFBO = 0;
-        glGenFramebuffers(1, &m_ColorBufferFBO);
-
-        glActiveTexture(GL_TEXTURE1);
-        glGenTextures(1, &m_ColorBuffer);
-
-        glBindTexture(GL_TEXTURE_2D, m_ColorBuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1600, 900, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, m_ColorBufferFBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorBuffer, 0);
-
-        GLuint depthrenderbuffer;
-        glGenRenderbuffers(1, &depthrenderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1600, 900);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
-        GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-        glDrawBuffers(1, DrawBuffers);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
-
 	}
 
     TestMotionBlur::~TestMotionBlur()
@@ -136,7 +109,7 @@ namespace test {
         glDeleteFramebuffers(1, &m_ColorBufferFBO);
 	}
 
-	void TestMotionBlur::OnUpdate(float deltaTime)
+	void TestMotionBlur::OnUpdate(double deltaTime)
 	{
 
 	}
@@ -184,7 +157,6 @@ namespace test {
             m_Program[0]->SetUniformMatrix4fv("u_MVP", m_MVP);
             m_Program[0]->SetUniform1f("u_alpha", 0.05f + 0.6f / glm::abs(count/2-i));
             m_Program[0]->SetUniform1i("u_texture", 0);
-            //m_Program[0]->SetUniform1i("u_accumulateTexture", 1);
 
             glClear(GL_DEPTH_BUFFER_BIT);
             glDrawArrays(GL_TRIANGLES, 0, 36);

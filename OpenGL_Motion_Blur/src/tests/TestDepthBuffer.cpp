@@ -87,7 +87,7 @@ namespace test {
 
 	}
 
-	void TestDepthBuffer::OnUpdate(float deltaTime)
+	void TestDepthBuffer::OnUpdate(double deltaTime)
 	{
         m_ModelTranslation = glm::translate(glm::mat4(1.0f), glm::vec3(m_ModelTranslationXYZ[0], m_ModelTranslationXYZ[1], m_ModelTranslationXYZ[2]));
 

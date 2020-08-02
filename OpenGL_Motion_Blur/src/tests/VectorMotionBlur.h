@@ -31,14 +31,14 @@ namespace test {
 		float m_ModelScalingXYZ[3];
 		unsigned int m_ColorBufferFBO;
 		unsigned int m_ColorBuffer;
-		float m_CurrentTime;
+		double m_CurrentTime;
 		int m_MotionBlurLevel;
 		float m_BlurVector[2];
 	public:
 		VectorMotionBlur();
 		~VectorMotionBlur();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(double deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
 	};

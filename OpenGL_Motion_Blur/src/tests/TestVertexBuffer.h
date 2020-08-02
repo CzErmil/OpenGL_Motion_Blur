@@ -15,7 +15,7 @@ namespace test {
 		TestVertexBuffer();
 		~TestVertexBuffer();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(double deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
 	private:

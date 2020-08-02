@@ -140,7 +140,7 @@ namespace test {
         glDeleteFramebuffers(1, &m_ColorBufferFBO);
 	}
 
-	void VectorMotionBlur::OnUpdate(float deltaTime)
+	void VectorMotionBlur::OnUpdate(double deltaTime)
 	{
 
 	}

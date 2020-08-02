@@ -35,7 +35,7 @@ namespace test {
 		float m_PrevModelScalingXYZ[3];
 		unsigned int m_ColorBufferFBO;
 		unsigned int m_ColorBuffer;
-		float m_CurrentTime;
+		double m_CurrentTime;
 		int m_SwapInterval;
 		int m_MotionBlurLevel;
 		float m_CubeSpeed;
@@ -43,7 +43,7 @@ namespace test {
 		TestMotionBlur();
 		~TestMotionBlur();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(double deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
 	};

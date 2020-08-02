@@ -14,6 +14,7 @@ private:
 	unsigned char* m_LocalBuffer;
 public:
 	Texture(const std::string& fileName);
+	Texture(const std::string& fileName, int parm);
 	Texture(int width, int height, int param, int internalFormat, int format, int type);
 	~Texture();
 
