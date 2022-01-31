@@ -21,18 +21,14 @@ namespace test {
 	{
 	private:
 		std::unique_ptr<VertexArrayObject> m_VAO;
-		std::unique_ptr<VertexBuffer> m_VertexBaffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		std::unique_ptr<ShaderProgram> m_Program[2];
 		std::unique_ptr<Texture> m_Texture;
 		std::unique_ptr<Model> m_Sphere;
-		glm::mat4 m_Proj;
-		glm::mat4 m_View;
-		glm::mat4 m_Model;
+		glm::mat4 m_Proj, m_View,  m_Model;
 		glm::mat4 m_MVP;
-		glm::mat4 m_ModelRotation;
-		glm::mat4 m_ModelTranslation;
-		glm::mat4 m_ModelScaling;
+		glm::mat4 m_ModelRotation, m_ModelTranslation, m_ModelScaling;
 		Inputs m_Inputs;
 		Camera m_Camera;
 		float m_ModelRotationXYZ[3];

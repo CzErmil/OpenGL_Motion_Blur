@@ -55,7 +55,7 @@ namespace test {
         m_VAO = std::make_unique<VertexArrayObject>();
         m_VAO->Bind();
 
-        m_VertexBaffer = std::make_unique<VertexBuffer>(&data, sizeof(data));
+        m_VertexBuffer = std::make_unique<VertexBuffer>(&data, sizeof(data));
         
         VertexBufferLayout layout;
 
@@ -63,7 +63,7 @@ namespace test {
         //layout.Push<GLfloat>(3);
         layout.Push<GLfloat>(2);
 
-        m_VAO->AddVertexBuffer(*m_VertexBaffer, layout);
+        m_VAO->AddVertexBuffer(*m_VertexBuffer, layout);
 
         Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/VertexShader.shader");
         Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/FragmentShader.shader");

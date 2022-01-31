@@ -207,6 +207,7 @@
     <None Include="src\shaders\DrawLines_fragment.glsl" />
     <None Include="src\shaders\CameraMotionBlur_Fragment.glsl" />
     <None Include="src\shaders\CameraMotionBlur_Vertex.glsl" />
+    <None Include="src\shaders\test.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.png">

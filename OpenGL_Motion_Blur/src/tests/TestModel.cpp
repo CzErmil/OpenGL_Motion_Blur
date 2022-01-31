@@ -20,13 +20,15 @@ namespace test {
 		m_Stack(30),
 		m_SphereChanged(1)
 	{
+		int WINDOW_WIDTH, WINDOW_HEIGHT;
+		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
+
 		glLineWidth(2);
-		static int WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900;
 
 		m_VAO = std::make_unique<VertexArrayObject>();
 		m_VAO->Bind();
 
-		m_VertexBaffer = std::make_unique<VertexBuffer>(nullptr, (6*100*80+3*100*20) * sizeof(Vertex), GL_DYNAMIC_DRAW);
+		m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, (6*100*80+3*100*20) * sizeof(Vertex), GL_DYNAMIC_DRAW);
 
 		VertexBufferLayout layout;
 
@@ -34,7 +36,7 @@ namespace test {
 		layout.Push<GLfloat>(3);
 		layout.Push<GLfloat>(2);
 
-		m_VAO->AddVertexBuffer(*m_VertexBaffer, layout);
+		m_VAO->AddVertexBuffer(*m_VertexBuffer, layout);
 
 		m_IndexBuffer = make_unique<IndexBuffer>(nullptr, (6 * 100 * 100), GL_DYNAMIC_DRAW);
 		m_IndexBuffer->Bind();
@@ -89,7 +91,7 @@ namespace test {
 			else
 				m_Sphere = make_unique<Sphere>(m_Sektors, m_Stack, 2, Surface::Flat);
 
-			m_VertexBaffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
+			m_VertexBuffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
 			m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
 			m_SphereChanged = 0;
 		}

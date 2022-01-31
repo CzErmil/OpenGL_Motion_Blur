@@ -71,9 +71,9 @@ namespace test {
         m_VAO = std::make_unique<VertexArrayObject>();
         m_VAO->Bind();
 
-        m_VertexBaffer = std::make_unique<VertexBuffer>(m_Sphere->getData(), m_Sphere->getSize());
+        m_VertexBuffer = std::make_unique<VertexBuffer>(m_Sphere->getData(), m_Sphere->getSize());
         
-        m_VAO->AddVertexBuffer(*m_VertexBaffer, m_Sphere->getLayout());
+        m_VAO->AddVertexBuffer(*m_VertexBuffer, m_Sphere->getLayout());
 
         m_IndexBuffer = make_unique<IndexBuffer>(m_Sphere->getIndecies().data(), m_Sphere->getCount());
         m_IndexBuffer->Bind();
@@ -249,7 +249,7 @@ namespace test {
                 glfwSwapInterval(m_SwapInterval);
             }
 
-            ImGui::SliderFloat("Cube Speed", &m_CubeSpeed, 0.1f, 10.0f, "%.1f", 1.0f);
+            ImGui::SliderFloat("Model Speed", &m_CubeSpeed, 0.1f, 10.0f, "%.1f", 1.0f);
 
             if (ImGui::Button("Reset"))
             {

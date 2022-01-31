@@ -107,7 +107,7 @@ int main(void)
         {
             currentTest->OnUpdate(deltaTime);
             currentTest->OnRender();
-            ImGui::Begin("Test");
+            ImGui::Begin("Menu");
             if (currentTest != testMenu && ImGui::Button("<-"))
             {
                 delete currentTest;

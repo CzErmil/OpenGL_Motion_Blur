@@ -21,9 +21,9 @@ namespace test {
 	{
 	private:
 		std::unique_ptr<VertexArrayObject> m_VAO;
-		std::unique_ptr<VertexBuffer> m_VertexBaffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
-		std::unique_ptr<ShaderProgram> m_Program[3];
+		std::unique_ptr<ShaderProgram> m_Program[4];
 		std::unique_ptr<Texture> m_Texture;
 		std::unique_ptr<FrameBuffer> m_FrameBuffer[2];
 		std::unique_ptr<Sphere> m_Sphere;
@@ -47,6 +47,10 @@ namespace test {
 		float m_MotionBlurPower;
 		float m_CubeSpeed;
 		bool m_Pause;
+		bool m_DrawLines;
+		bool m_Smooth;
+		int m_Sektors, m_Stack;
+		bool m_SphereChanged;
 	public:
 		AccumulateMotionBlur();
 		~AccumulateMotionBlur();

@@ -60,7 +60,7 @@ void main(void)
 	
 	vec3 viewDir = normalize(u_CameraPos - vs_fragCoord);
 
-	struct PointLight light[2];
+	PointLight light[2];
 	light[0].position	= vec3(0,4,0);
 	light[1].position	= vec3(5,0,0);
 	light[0].constant	=light[1].constant	= 1;

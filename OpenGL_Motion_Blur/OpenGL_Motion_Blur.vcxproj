@@ -218,6 +218,7 @@
     <None Include="src\shaders\RenderTexture.vertex_shader" />
     <None Include="src\shaders\RenderTexture_VectroMotionBlur.fragment_shader" />
     <None Include="src\shaders\RenderTexture_VectroMotionBlur.vertex_shader" />
+    <None Include="src\shaders\test.glsl" />
     <None Include="src\shaders\TestModel_fragment.glsl" />
     <None Include="src\shaders\TestModel_vertex.glsl" />
     <None Include="src\shaders\TestMotionBlur_Fragment.shader" />

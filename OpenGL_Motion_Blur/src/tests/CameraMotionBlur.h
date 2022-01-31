@@ -21,7 +21,7 @@ namespace test {
 	{
 	private:
 		std::unique_ptr<VertexArrayObject> m_VAO;
-		std::unique_ptr<VertexBuffer> m_VertexBaffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		std::unique_ptr<ShaderProgram> m_Program[2];
 		std::unique_ptr<Texture> m_Texture;
