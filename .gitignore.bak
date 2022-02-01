@@ -354,8 +354,6 @@ MigrationBackup/
 
 # My staff
 !Dependencies/GLEW/bin/
-!Dependencies/GLEW/bin/Release/
-!Dependencies/GLEW/bin/Release/x64/
 !Dependencies/GLEW/lib/
+!Dependencies/GLEW/bin/Release/
 !Dependencies/GLEW/lib/Release/
-!Dependencies/GLEW/lib/Release/x64/
