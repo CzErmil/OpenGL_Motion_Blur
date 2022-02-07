@@ -69,10 +69,24 @@ void Texture::Bind(unsigned int slot)
 
 	m_Slot = slot;
 	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, m_ID);
+	if (m_Count > 1)
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, m_ID);
+	}
 }
 
 void Texture::Unbind()
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (m_Count > 1)
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
