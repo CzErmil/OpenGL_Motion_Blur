@@ -10,24 +10,24 @@ FrameBuffer::FrameBuffer(Attachment attachment, unsigned int textureCount, int w
 
 	Bind();
 
-	int target = m_TextureCount > 1 ? GL_TEXTURE_2D_ARRAY : GL_TEXTURE_2D;
+	m_Target = m_TextureCount > 1 ? GL_TEXTURE_2D_ARRAY : GL_TEXTURE_2D;
 
 	switch (attachment)
 	{
 	case Attachment::COLOR_RGBA8:
-		m_Texture = std::make_unique<Texture>(target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+		m_ColorTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorTexture->GetID(), 0);
 		break;
 	case Attachment::COLOR_RGBA16F:
-		m_Texture = std::make_unique<Texture>(target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_RGBA16F, GL_RGBA, GL_UNSIGNED_BYTE);
+		m_ColorTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_RGBA16F, GL_RGBA, GL_UNSIGNED_BYTE);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorTexture->GetID(), 0);
 		break;
 	case Attachment::DEPTH:
-		m_Texture = std::make_unique<Texture>(target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+		m_ColorTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_Texture->GetID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_ColorTexture->GetID(), 0);
 
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
@@ -57,10 +57,7 @@ void FrameBuffer::Unbind()
 void FrameBuffer::SetDepthBuffer()
 {
 	Bind();
-	GLuint depthrenderbuffer;
-	glGenRenderbuffers(m_TextureCount, &depthrenderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+	m_DepthTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture->GetID(), 0);
 	Unbind();
 }

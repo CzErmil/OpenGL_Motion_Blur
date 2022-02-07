@@ -17,7 +17,7 @@ public:
 	Texture(const std::string& fileName);
 	Texture(const std::string& fileName, int parm);
 	Texture(int width, int height, int param, int internalFormat, int format, int type);
-	Texture(int target, unsigned int count, int width, int height, int param, int internalFormat, int format, int type);
+	Texture(int target, unsigned int textureCount, int width, int height, int param, int internalFormat, int format, int type);
 	~Texture();
 
 	void Bind(unsigned int slot = 0);
