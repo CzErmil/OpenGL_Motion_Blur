@@ -48,7 +48,7 @@ void Camera::processMouseMovment(double x, double y, double lastX, double lastY)
 		double yOffset = (y - lastY) * m_MouseSensitivity;
 
 		m_Yaw += xOffset;
-		m_Pitch += yOffset;
+		m_Pitch -= yOffset;
 
 		if (m_Pitch > 89.0f)
 			m_Pitch = 89.0f;
