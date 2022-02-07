@@ -140,7 +140,7 @@ namespace test {
         {
             m_FrameBuffer[1]->Bind();
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
             m_FrameBuffer[1]->Unbind();
 
             int count = m_MotionBlurLevel;
@@ -183,7 +183,6 @@ namespace test {
 
                 m_FrameBuffer[1]->Bind();
 
-                glClear(GL_DEPTH_BUFFER_BIT);
                 glBlendFunc(GL_ONE, GL_ONE);
 
                 m_FrameBuffer[1]->BindTexture(2);
@@ -203,7 +202,7 @@ namespace test {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
         m_Program[2]->UseProgram();
         m_Program[2]->SetUniform1i("u_texture", 2);
         glDrawArrays(GL_TRIANGLES, 0, 6);
