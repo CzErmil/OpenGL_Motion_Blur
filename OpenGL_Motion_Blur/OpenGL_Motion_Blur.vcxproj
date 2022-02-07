@@ -157,6 +157,7 @@
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\tests\AccumulateMotionBlur.cpp" />
     <ClCompile Include="src\tests\CameraMotionBlur.cpp" />
+    <ClCompile Include="src\tests\MultiLayerMotionBlur.cpp" />
     <ClCompile Include="src\tests\TestDepthBuffer.cpp" />
     <ClCompile Include="src\tests\TestModel.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\tests\AccumulateMotionBlur.h" />
     <ClInclude Include="src\tests\CameraMotionBlur.h" />
+    <ClInclude Include="src\tests\MultiLayerMotionBlur.h" />
     <ClInclude Include="src\tests\PerObjectMotionBlur.h" />
     <ClInclude Include="src\tests\TestDepthBuffer.h" />
     <ClInclude Include="src\tests\TestModel.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="src\VertexArrayObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="imgui.ini" />
     <None Include="src\shaders\DrawLines_geometry.glsl" />
     <None Include="src\shaders\DrawLines_vertex.glsl" />
     <None Include="src\shaders\DrawLines_fragment.glsl" />

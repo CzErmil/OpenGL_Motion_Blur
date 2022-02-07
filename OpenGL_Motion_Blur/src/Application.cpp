@@ -11,6 +11,7 @@
 #include "tests/VectorMotionBlur.h"
 #include "tests/CameraMotionBlur.h"
 #include "tests/PerObjectMotionBlur.h"
+#include "tests/MultiLayerMotionBlur.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -84,6 +85,7 @@ int main(void)
     testMenu->RegisterTest<test::VectorMotionBlur>("Vector Motion Blur");
     testMenu->RegisterTest<test::CameraMotionBlur>("Camera Motion Blur");
     testMenu->RegisterTest<test::PerObjectMotionBlur>("Per-object Motion Blur");
+    testMenu->RegisterTest<test::MultiLayerMotionBlur>("Multi-Layer Motion Blur");
 
     double curentTime, lastTime, deltaTime;
     lastTime = glfwGetTime();

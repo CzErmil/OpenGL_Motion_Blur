@@ -93,6 +93,9 @@
     <ClCompile Include="src\Sphere.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\MultiLayerMotionBlur.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\VertexBuffer.h">
@@ -179,6 +182,9 @@
     <ClInclude Include="src\Sphere.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\MultiLayerMotionBlur.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BasicVertexShader.shader" />
@@ -208,6 +214,7 @@
     <None Include="src\shaders\CameraMotionBlur_Fragment.glsl" />
     <None Include="src\shaders\CameraMotionBlur_Vertex.glsl" />
     <None Include="src\shaders\test.glsl" />
+    <None Include="imgui.ini" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.png">
