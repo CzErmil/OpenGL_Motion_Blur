@@ -20,6 +20,10 @@ namespace test {
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
 
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT_FACE);
+		glFrontFace(GL_CCW);
+
 		glLineWidth(2);
 
 		m_Sphere = make_unique<Sphere>(m_Sektors, m_Stack, 2, Surface::Smooth);

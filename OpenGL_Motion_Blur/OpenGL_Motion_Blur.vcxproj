@@ -218,7 +218,11 @@
     <None Include="src\shaders\FragmentShader_DepthBuffer.shader" />
     <None Include="src\shaders\CameraMotionBlur_Fragment.glsl" />
     <None Include="src\shaders\CameraMotionBlur_Vertex.glsl" />
+    <None Include="src\shaders\MultiLayerMotionBlur_fragment.glsl" />
+    <None Include="src\shaders\MultiLayerMotionBlur_geometry.glsl" />
+    <None Include="src\shaders\MultiLayerMotionBlur_vertex.glsl" />
     <None Include="src\shaders\PerObjectMotionBlur_Fragment.shader" />
+    <None Include="src\shaders\RenderArrayTexture.glsl" />
     <None Include="src\shaders\RenderTexture.fragment_shader" />
     <None Include="src\shaders\RenderTexture.vertex_shader" />
     <None Include="src\shaders\RenderTexture_VectroMotionBlur.fragment_shader" />
