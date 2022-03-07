@@ -54,6 +54,14 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
+        {
+            glViewport(0,0,width,height);
+            WINDOW_WIDTH = width;
+            WINDOW_HEIGHT = height;
+            std::cout << WINDOW_WIDTH << " x " << WINDOW_HEIGHT << "\n";
+        });
+
     if (glewInit() != GLEW_OK) {
         std::cout << "GLEW has not been inintialized\n";
         return -1;

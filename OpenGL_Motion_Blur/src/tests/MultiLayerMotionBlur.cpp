@@ -25,6 +25,7 @@ namespace test {
 	{
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
+		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT_FACE);
@@ -103,7 +104,7 @@ namespace test {
 
 	MultiLayerMotionBlur::~MultiLayerMotionBlur()
 	{
-
+		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_TRUE);
 	}
 
 	void MultiLayerMotionBlur::calculatePosition(double deltaTime)

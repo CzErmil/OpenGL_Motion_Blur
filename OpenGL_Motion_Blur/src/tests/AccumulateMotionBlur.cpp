@@ -25,7 +25,9 @@ namespace test {
         m_Stack(30),
         m_SphereChanged(1)
 	{
-        static int WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900;
+        int WINDOW_WIDTH, WINDOW_HEIGHT;
+        glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
+        glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
 
         glLineWidth(2);
 
@@ -102,6 +104,8 @@ namespace test {
     AccumulateMotionBlur::~AccumulateMotionBlur()
 	{
         glfwSwapInterval(1);
+
+        glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_TRUE);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

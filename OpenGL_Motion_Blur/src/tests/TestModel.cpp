@@ -22,6 +22,7 @@ namespace test {
 	{
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
+		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
 
 		glLineWidth(2);
 
@@ -78,7 +79,7 @@ namespace test {
 
 	TestModel::~TestModel()
 	{
-
+		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_TRUE);
 	}
 
 	void TestModel::OnUpdate(double deltaTime)

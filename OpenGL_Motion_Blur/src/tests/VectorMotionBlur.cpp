@@ -15,7 +15,9 @@ namespace test {
         m_MotionBlurLevel(8),
         m_BlurVector{ 0.0, 0.0 }
 	{
-        static int WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900;
+        int WINDOW_WIDTH, WINDOW_HEIGHT;
+        glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
+        glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT_FACE);
@@ -136,6 +138,9 @@ namespace test {
     VectorMotionBlur::~VectorMotionBlur()
 	{
         glfwSwapInterval(1);
+
+        glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_TRUE);
+
         glDeleteTextures(1, &m_ColorBuffer);
         glDeleteFramebuffers(1, &m_ColorBufferFBO);
 	}

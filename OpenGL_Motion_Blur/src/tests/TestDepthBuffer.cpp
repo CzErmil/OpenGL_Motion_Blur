@@ -1,5 +1,6 @@
 #include "TestDepthBuffer.h"
 
+#include "GLFW/glfw3.h"
 #include <glm/gtc/matrix_transform.hpp> 
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -11,7 +12,10 @@ namespace test {
         m_ModelTranslationXYZ{ 0.0f,0.0f,0.0f },
         m_ModelScalingXYZ{ 1.0f,1.0f,1.0f }
 	{
-        static int WINDOW_WIDTH = 1600, WINDOW_HEIGHT = 900;
+        int WINDOW_WIDTH, WINDOW_HEIGHT;
+        glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
+        glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
+
         glEnable(GL_DEPTH_TEST);
         const float data[]{
             -1.0f, -1.0f,  1.0f, 0.0f,  0.5f,   ////1    WALLS    0.0f,  0.0f,  1.0f,
@@ -84,7 +88,7 @@ namespace test {
 
     TestDepthBuffer::~TestDepthBuffer()
 	{
-
+        glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_TRUE);
 	}
 
 	void TestDepthBuffer::OnUpdate(double deltaTime)
