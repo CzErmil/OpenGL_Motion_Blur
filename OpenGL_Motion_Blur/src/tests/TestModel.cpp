@@ -1,10 +1,11 @@
 #include "TestModel.h"
 
 #include "GLFW/glfw3.h"
-#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtc/matrix_transform.hpp>
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "functional"
+#include <cmath>
 
 namespace test {
 
@@ -12,6 +13,8 @@ namespace test {
 		m_ModelRotationXYZ{ 0.0f,0.0f,0.0f },
 		m_ModelTranslationXYZ{ 0.0f,0.0f,0.0f },
 		m_ModelScaleXYZ{ 1.0f,1.0f,1.0f },
+		m_MovemnetSpeedXYZ{ 3.0f,3.0f,3.0f },
+		m_RadiusXYZ{ 1.0f,1.0f,1.0f },
 		m_DeltaTime(0),
 		m_Camera(&m_DeltaTime),
 		m_DrawLines(0),
@@ -29,7 +32,7 @@ namespace test {
 		m_VAO = std::make_unique<VertexArrayObject>();
 		m_VAO->Bind();
 
-		m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, (6*100*80+3*100*20) * sizeof(Vertex), GL_DYNAMIC_DRAW);
+		m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, (6 * 100 * 80 + 3 * 100 * 20) * sizeof(Vertex), GL_DYNAMIC_DRAW);
 
 		VertexBufferLayout layout;
 
@@ -82,9 +85,57 @@ namespace test {
 		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_TRUE);
 	}
 
+	void TestModel::calculatePosition(double deltaTime)
+	{
+		calculateMovement(m_TypeOfMovementXYZ[0], 0, deltaTime);
+		calculateMovement(m_TypeOfMovementXYZ[1], 1, deltaTime);
+		calculateMovement(m_TypeOfMovementXYZ[2], 2, deltaTime);
+		calculateRotation(deltaTime);
+	}
+
+	void TestModel::calculateMovement(int typeOfMovement, int XYZ, double deltaTime)
+	{
+		m_MovementSumTimeXYZ[XYZ] += deltaTime * m_MovemnetSpeedXYZ[XYZ];
+
+		switch (typeOfMovement)
+		{
+		case 0:
+			m_ModelTranslationXYZ[XYZ] = m_OriginalModelTranslationXYZ[XYZ];
+			break;
+		case 1:
+			m_ModelTranslationXYZ[XYZ] = m_OriginalModelTranslationXYZ[XYZ] + sinf(m_MovementSumTimeXYZ[XYZ]) * m_RadiusXYZ[XYZ];
+			break;
+		case 2:
+			m_ModelTranslationXYZ[XYZ] = m_OriginalModelTranslationXYZ[XYZ] + cosf(m_MovementSumTimeXYZ[XYZ]) * m_RadiusXYZ[XYZ];
+			break;
+		default:
+			break;
+		}
+	}
+
+	void TestModel::calculateRotation(double deltaTime)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			m_RotationSumTimeXYZ[i] += deltaTime * m_RotationSpeedXYZ[i];
+
+			if (m_RotationAxiexXYZ[i])
+			{
+				m_ModelRotationXYZ[i] = fmod(m_OriginalModelRotationXYZ[i] + 180 + m_RotationSumTimeXYZ[i] * 30, 360) - 180;
+			}
+			else
+			{
+				m_ModelRotationXYZ[i] = m_OriginalModelRotationXYZ[i];
+			}
+
+		}
+	}
+
 	void TestModel::OnUpdate(double deltaTime)
 	{
 		m_DeltaTime = deltaTime;
+
+		calculatePosition(deltaTime);
 
 		if (m_SphereChanged) {
 			if (m_Smooth)
@@ -96,11 +147,6 @@ namespace test {
 			m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
 			m_SphereChanged = 0;
 		}
-
-		m_ModelRotationXYZ[1] += (float)m_DeltaTime;
-
-		if (m_ModelRotationXYZ[1] > 180)
-			m_ModelRotationXYZ[1] -= 360;
 
 		m_Sphere->setPosition(m_ModelTranslationXYZ[0], m_ModelTranslationXYZ[1], m_ModelTranslationXYZ[2]);
 		m_Sphere->setRotation(m_ModelRotationXYZ[0], m_ModelRotationXYZ[1], m_ModelRotationXYZ[2]);
@@ -134,45 +180,118 @@ namespace test {
 
 	void TestModel::OnImGuiRender()
 	{
+		if (ImGui::CollapsingHeader("Object parameters", ImGuiTreeNodeFlags_None))
 		{
-			ImGui::SliderFloat3("Model translation", m_ModelTranslationXYZ, -10.0f, 10.0f, "%.1f", 2.0f);
-			ImGui::SliderFloat3("Model rotation", m_ModelRotationXYZ, -180.0f, 180.0f, "%.0f", 1.0f);
-			ImGui::SliderFloat3("Model scaling", m_ModelScaleXYZ, 0.1f, 3.0f, "%.2f", 3.0f);
-			if(ImGui::SliderInt("Sphere secttors", &m_Sektors, 3, 100, "%d")) m_SphereChanged=1;
-			if(ImGui::SliderInt("Sphere stack", &m_Stack, 3, 100, "%d")) m_SphereChanged = 1;
+			ImGui::SliderFloat3("Model translation", m_OriginalModelTranslationXYZ, -10.0f, 10.0f, "%.1f", 1.0f);
+			ImGui::SliderFloat3("Model rotation", m_OriginalModelRotationXYZ, -180.0f, 180.0f, "%.0f", 1.0f);
+			ImGui::SliderFloat3("Model scaling", m_ModelScaleXYZ, 0.1f, 3.0f, "%.2f", 1.0f);
+		}
 
-			ImGui::Text("Draw lines?");
+		if (ImGui::CollapsingHeader("Sphere modifications", ImGuiTreeNodeFlags_None))
+		{
+			if (ImGui::SliderInt("Secttors", &m_Sektors, 3, 100, "%d")) m_SphereChanged = 1;
+			if (ImGui::SliderInt("Stack", &m_Stack, 3, 100, "%d")) m_SphereChanged = 1;
 
-			if (ImGui::RadioButton("No", m_DrawLines == 0))
+			if (ImGui::RadioButton("Don't draw lines", m_DrawLines == 0))
 			{
 				m_DrawLines = 0;
 			} ImGui::SameLine();
 
-			if (ImGui::RadioButton("Yes", m_DrawLines == 1))
+			if (ImGui::RadioButton("Draw lines", m_DrawLines == 1))
 			{
 				m_DrawLines = 1;
 			}
 
-			if (ImGui::RadioButton("Smooth", m_Smooth == 1))
+			if (ImGui::RadioButton("Smooth surface", m_Smooth == 1))
 			{
 				m_Smooth = 1;
 				m_SphereChanged = 1;
 			} ImGui::SameLine();
 
-			if (ImGui::RadioButton("Flat", m_Smooth == 0))
+			if (ImGui::RadioButton("Smooth Flat", m_Smooth == 0))
 			{
 				m_Smooth = 0;
 				m_SphereChanged = 1;
 			}
+		}
 
-			if (ImGui::Button("Reset"))
+		if (ImGui::CollapsingHeader("Objct movement", ImGuiTreeNodeFlags_None))
+		{
+			ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.7f);
+
+			if (ImGui::RadioButton("x = const", m_TypeOfMovementXYZ[0] == 0))
 			{
-				m_ModelRotationXYZ[0] = m_ModelRotationXYZ[1] = m_ModelRotationXYZ[2] = 0.0f;
-				m_ModelTranslationXYZ[0] = m_ModelTranslationXYZ[1] = m_ModelTranslationXYZ[2] = 0.0f;
-				m_ModelScaleXYZ[0] = m_ModelScaleXYZ[1] = m_ModelScaleXYZ[2] = 1.0f;
+				m_TypeOfMovementXYZ[0] = 0;
+			} ImGui::SameLine();
+
+			if (ImGui::RadioButton("x = sin(t)", m_TypeOfMovementXYZ[0] == 1))
+			{
+				m_TypeOfMovementXYZ[0] = 1;
+			} ImGui::SameLine();
+
+			if (ImGui::RadioButton("x = cos(t)", m_TypeOfMovementXYZ[0] == 2))
+			{
+				m_TypeOfMovementXYZ[0] = 2;
 			}
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::SliderFloat("Radius of movement in the x axis", &m_RadiusXYZ[0], 0.0f, 20.0f, "%.1f", 1.0f);
+			ImGui::SliderFloat("X-axis movement speed", &m_MovemnetSpeedXYZ[0], 0.0f, 10.0f, "%.1f", 1.0f);
+
+			if (ImGui::RadioButton("y = const", m_TypeOfMovementXYZ[1] == 0))
+			{
+				m_TypeOfMovementXYZ[1] = 0;
+			} ImGui::SameLine();
+
+			if (ImGui::RadioButton("y = sin(t)", m_TypeOfMovementXYZ[1] == 1))
+			{
+				m_TypeOfMovementXYZ[1] = 1;
+			} ImGui::SameLine();
+
+			if (ImGui::RadioButton("y = cos(t)", m_TypeOfMovementXYZ[1] == 2))
+			{
+				m_TypeOfMovementXYZ[1] = 2;
+			}
+
+			ImGui::SliderFloat("Radius of movement in the y axis", &m_RadiusXYZ[1], 0.0f, 20.0f, "%.1f", 1.0f);
+			ImGui::SliderFloat("Y-axis movement speed", &m_MovemnetSpeedXYZ[1], 0.0f, 10.0f, "%.1f", 1.0f);
+
+			if (ImGui::RadioButton("z = const", m_TypeOfMovementXYZ[2] == 0))
+			{
+				m_TypeOfMovementXYZ[2] = 0;
+			} ImGui::SameLine();
+
+			if (ImGui::RadioButton("z = sin(t)", m_TypeOfMovementXYZ[2] == 1))
+			{
+				m_TypeOfMovementXYZ[2] = 1;
+			} ImGui::SameLine();
+
+			if (ImGui::RadioButton("z = cos(t)", m_TypeOfMovementXYZ[2] == 2))
+			{
+				m_TypeOfMovementXYZ[2] = 2;
+			}
+
+			ImGui::SliderFloat("Radius of movement in the z axis", &m_RadiusXYZ[2], 0.0f, 20.0f, "%.1f", 1.0f);
+			ImGui::SliderFloat("Z-axis movement speed", &m_MovemnetSpeedXYZ[2], 0.0f, 10.0f, "%.1f", 1.0f);
+
+			ImGui::Text("Axis of rotation");
+
+			ImGui::Checkbox("x axies", &m_RotationAxiexXYZ[0]); ImGui::SameLine();
+			ImGui::Checkbox("y axies", &m_RotationAxiexXYZ[1]); ImGui::SameLine();
+			ImGui::Checkbox("z axies", &m_RotationAxiexXYZ[2]);
+			ImGui::SliderFloat("X-axis rotation speed", &m_RotationSpeedXYZ[0], 0.0f, 10.0f, "%.1f", 1.0f);
+			ImGui::SliderFloat("Y-axis rotation speed", &m_RotationSpeedXYZ[1], 0.0f, 10.0f, "%.1f", 1.0f);
+			ImGui::SliderFloat("Z-axis rotation speed", &m_RotationSpeedXYZ[2], 0.0f, 10.0f, "%.1f", 1.0f);
+
+			ImGui::PopItemWidth();
 		}
+
+		if (ImGui::Button("Reset"))
+		{
+			m_ModelRotationXYZ[0] = m_ModelRotationXYZ[1] = m_ModelRotationXYZ[2] = 0.0f;
+			m_ModelTranslationXYZ[0] = m_ModelTranslationXYZ[1] = m_ModelTranslationXYZ[2] = 0.0f;
+			m_ModelScaleXYZ[0] = m_ModelScaleXYZ[1] = m_ModelScaleXYZ[2] = 1.0f;
+		}
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }

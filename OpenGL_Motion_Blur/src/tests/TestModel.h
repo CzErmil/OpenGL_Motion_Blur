@@ -33,8 +33,17 @@ namespace test {
 		Camera m_Camera;
 		float m_ModelRotationXYZ[3];
 		float m_ModelTranslationXYZ[3];
+		float m_OriginalModelTranslationXYZ[3];
+		float m_OriginalModelRotationXYZ[3];
 		float m_ModelScaleXYZ[3];
+		int m_TypeOfMovementXYZ[3];
+		float m_RadiusXYZ[3];
+		float m_MovemnetSpeedXYZ[3];
+		bool m_RotationAxiexXYZ[3];
+		float m_RotationSpeedXYZ[3];
 		double m_DeltaTime;
+		double m_MovementSumTimeXYZ[3];
+		double m_RotationSumTimeXYZ[3];
 		bool m_DrawLines;
 		bool m_Smooth;
 		int m_Sektors, m_Stack;
@@ -43,6 +52,9 @@ namespace test {
 		TestModel();
 		~TestModel();
 
+		void calculatePosition(double deltaTime);
+		void calculateMovement(int typeOfMovement, int XYZ, double deltaTime);
+		void calculateRotation(double deltaTime);
 		void OnUpdate(double deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
