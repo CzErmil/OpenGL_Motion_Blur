@@ -2,6 +2,7 @@
 
 #include "GLFW/glfw3.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "functional"
@@ -10,6 +11,15 @@
 namespace test {
 
 	TestModel::TestModel() :
+		m_Light{ glm::vec3(-0.5f,-0.5f,-0.3f),		// direction
+			glm::vec3(0.1f, 0.1f, 0.1f),			// ambient
+			glm::vec3(1.0f, 1.0f, 1.0f),			// diffuse
+			glm::vec3(1.0f, 1.0f, 1.0f) },			// specular
+		m_Material{ glm::vec3(1.0f, 1.0f, 1.0f),	// ambient
+			glm::vec3(1.0f, 1.0f, 1.0f),			// diffuse
+			glm::vec3(0.3f, 0.3f, 0.3f),			// specular
+			16.0f },									// shininess
+		m_ClearColor{ glm::vec4(0.2f, 0.2f, 0.4f, 1.0f) },
 		m_ModelRotationXYZ{ 0.0f,0.0f,0.0f },
 		m_ModelTranslationXYZ{ 0.0f,0.0f,0.0f },
 		m_ModelScaleXYZ{ 1.0f,1.0f,1.0f },
@@ -46,7 +56,7 @@ namespace test {
 		m_IndexBuffer->Bind();
 
 		Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/TestModel_vertex.glsl");
-		Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/TestModel_fragment.glsl");
+		Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/DirLight_fragment.glsl");
 
 		m_Program[0] = std::make_unique<ShaderProgram>(vertexShader, fragmentShader);
 
@@ -60,7 +70,6 @@ namespace test {
 		m_Texture->Bind(0);
 
 		m_Program[0]->UseProgram();
-		m_Program[0]->SetUniform1i("u_texture", 0);
 
 		m_Proj = m_Camera.getProj();
 
@@ -126,6 +135,7 @@ namespace test {
 			else
 			{
 				m_ModelRotationXYZ[i] = m_OriginalModelRotationXYZ[i];
+				m_RotationSumTimeXYZ[i] = 0;
 			}
 
 		}
@@ -160,11 +170,25 @@ namespace test {
 
 	void TestModel::OnRender()
 	{
+		glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_Program[0]->UseProgram();
 		m_Program[0]->SetUniformMatrix4fv("u_MVP", m_MVP);
 		m_Program[0]->SetUniformMatrix4fv("u_Model", m_Model);
 		m_Program[0]->SetUniform3fv("u_CameraPos", m_Camera.getPosition());
+
+		m_Program[0]->SetUniform1i("u_texture", 0);
+
+		m_Program[0]->SetUniform3fv("material.ambient", m_Material.ambient);
+		m_Program[0]->SetUniform3fv("material.diffuse", m_Material.diffuse);
+		m_Program[0]->SetUniform3fv("material.specular", m_Material.specular);
+		m_Program[0]->SetUniform1f("material.shininess", m_Material.shininess);
+
+		m_Program[0]->SetUniform3fv("light.direction", m_Light.direction);
+		m_Program[0]->SetUniform3fv("light.ambient", m_Light.ambient);
+		m_Program[0]->SetUniform3fv("light.diffuse", m_Light.diffuse);
+		m_Program[0]->SetUniform3fv("light.specular", m_Light.specular);
 
 		glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
@@ -180,11 +204,23 @@ namespace test {
 
 	void TestModel::OnImGuiRender()
 	{
+		if (ImGui::CollapsingHeader("Enviroment settings", ImGuiTreeNodeFlags_None))
+		{
+			ImGui::ColorEdit4("Clear color", glm::value_ptr(m_ClearColor));
+			ImGui::SliderFloat3("Light scaling", glm::value_ptr(m_Light.direction), -1.0f, 1.0f, "%.3f", 1.0f);
+			ImGui::ColorEdit3("Light ambient", glm::value_ptr(m_Light.ambient));
+			ImGui::ColorEdit3("Light diffuse", glm::value_ptr(m_Light.diffuse));
+			ImGui::ColorEdit3("Light specular", glm::value_ptr(m_Light.specular));
+		}
+
 		if (ImGui::CollapsingHeader("Object parameters", ImGuiTreeNodeFlags_None))
 		{
 			ImGui::SliderFloat3("Model translation", m_OriginalModelTranslationXYZ, -10.0f, 10.0f, "%.1f", 1.0f);
 			ImGui::SliderFloat3("Model rotation", m_OriginalModelRotationXYZ, -180.0f, 180.0f, "%.0f", 1.0f);
 			ImGui::SliderFloat3("Model scaling", m_ModelScaleXYZ, 0.1f, 3.0f, "%.2f", 1.0f);
+
+			ImGui::ColorEdit3("Model material specular", glm::value_ptr(m_Material.specular));
+			ImGui::SliderFloat("Model material shininess", &m_Material.shininess, 1.0f, 256.0f, "%.1f", 1.0f);
 		}
 
 		if (ImGui::CollapsingHeader("Sphere modifications", ImGuiTreeNodeFlags_None))

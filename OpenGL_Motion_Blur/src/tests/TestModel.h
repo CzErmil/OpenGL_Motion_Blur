@@ -14,6 +14,8 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Sphere.h"
+#include "Light.h"
+#include "Material.h"
 
 namespace test {
 
@@ -31,6 +33,9 @@ namespace test {
 		glm::mat4 m_ModelRotation, m_ModelTranslation, m_ModelScaling;
 		Inputs m_Inputs;
 		Camera m_Camera;
+		DirectionalLight m_Light;
+		Material m_Material;
+		glm::vec4 m_ClearColor;
 		float m_ModelRotationXYZ[3];
 		float m_ModelTranslationXYZ[3];
 		float m_OriginalModelTranslationXYZ[3];

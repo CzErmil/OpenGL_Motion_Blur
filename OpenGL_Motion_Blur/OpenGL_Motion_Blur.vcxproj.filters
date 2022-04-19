@@ -185,6 +185,12 @@
     <ClInclude Include="src\tests\MultiLayerMotionBlur.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\BasicVertexShader.shader" />
@@ -219,9 +225,13 @@
     <None Include="src\shaders\MultiLayerMotionBlur_geometry.glsl" />
     <None Include="src\shaders\MultiLayerMotionBlur_vertex.glsl" />
     <None Include="src\shaders\RenderArrayTexture.glsl" />
+    <None Include="src\shaders\DirLight_fragment.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="res\textures\earth.bmp">
       <Filter>Pliki zasobów</Filter>
     </Image>
   </ItemGroup>

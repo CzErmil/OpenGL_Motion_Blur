@@ -175,6 +175,8 @@
     <ClCompile Include="src\VertexArrayObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Light.h" />
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\FrameBuffer.h" />
     <ClInclude Include="src\Camera.h" />
@@ -207,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
+    <None Include="src\shaders\DirLight_fragment.glsl" />
     <None Include="src\shaders\DrawLines_geometry.glsl" />
     <None Include="src\shaders\DrawLines_vertex.glsl" />
     <None Include="src\shaders\DrawLines_fragment.glsl" />
@@ -242,6 +245,7 @@
     <None Include="src\shaders\FragmentShader_texture.shader" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\textures\earth.bmp" />
     <Image Include="res\textures\grass.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
