@@ -5,27 +5,24 @@
 namespace test 
 {
 	ObjectTest::ObjectTest() :
-		m_Light{ glm::vec3(-0.5f,-0.5f,-0.3f),		// direction
-		glm::vec3(0.1f, 0.1f, 0.1f),				// ambient
-		glm::vec3(1.0f, 1.0f, 1.0f),				// diffuse
-		glm::vec3(1.0f, 1.0f, 1.0f) },				// specular
-		m_Material{ glm::vec3(1.0f, 1.0f, 1.0f),	// ambient
-			glm::vec3(1.0f, 1.0f, 1.0f),			// diffuse
-			glm::vec3(0.3f, 0.3f, 0.3f),			// specular
-			16.0f },								// shininess
-		m_ClearColor{ glm::vec4(0.2f, 0.2f, 0.4f, 1.0f) },
-		m_ModelRotation{ glm::vec3(0.0f,0.0f,0.0f) },
-		m_ModelTranslation{ glm::vec3(0.0f,0.0f,0.0f) },
-		m_ModelScale{ glm::vec3(1.0f,1.0f,1.0f) },
-		m_MovemnetSpeed{ glm::vec3(3.0f,3.0f,3.0f) },
-		m_Radius{ glm::vec3(1.0f,1.0f,1.0f) },
+		m_Light{ LIGHT },
+		m_Material{ MATERIAL },
+		m_ClearColor{ CLEARCOLOR },
+		m_OriginalModelRotation{ MODELROTATION },
+		m_OriginalModelTranslation{ MODELTRANSLATION },
+		m_ModelScale{ MODELSCALE },
+		m_MovemnetSpeed{ MOVEMENTSPEED },
+		m_RotationSpeed{ ROTATIONSPEED },
+		m_Radius{ RADIUS },
 		m_DeltaTime(0),
 		m_Camera(&m_DeltaTime),
-		m_DrawLines(0),
+		m_DrawLines(DRAWLINES),
 		m_Smooth(1),
-		m_Sektors(30),
-		m_Stack(30),
-		m_SphereChanged(1)
+		m_Sectors(SECTORS),
+		m_Stacks(STACKS),
+		m_SphereChanged(1),
+		m_TypeOfMovementXYZ{},
+		m_RotationAxiexXYZ{}
 	{
 
 	}
@@ -49,6 +46,11 @@ namespace test
 			ImGui::ColorEdit3("Light ambient", glm::value_ptr(m_Light.ambient));
 			ImGui::ColorEdit3("Light diffuse", glm::value_ptr(m_Light.diffuse));
 			ImGui::ColorEdit3("Light specular", glm::value_ptr(m_Light.specular));
+
+			if (ImGui::Button("Reset enviroment settings"))
+			{
+				ResetEnviromentSettings();
+			}
 		}
 
 		if (ImGui::CollapsingHeader("Object parameters", ImGuiTreeNodeFlags_None))
@@ -59,12 +61,17 @@ namespace test
 
 			ImGui::ColorEdit3("Model material specular", glm::value_ptr(m_Material.specular));
 			ImGui::SliderFloat("Model material shininess", &m_Material.shininess, 1.0f, 256.0f, "%.1f", 1.0f);
+
+			if (ImGui::Button("Reset object parameters"))
+			{
+				ResetObjectParameters();
+			}
 		}
 
 		if (ImGui::CollapsingHeader("Sphere modifications", ImGuiTreeNodeFlags_None))
 		{
-			if (ImGui::SliderInt("Secttors", &m_Sektors, 3, 100, "%d")) m_SphereChanged = 1;
-			if (ImGui::SliderInt("Stack", &m_Stack, 3, 100, "%d")) m_SphereChanged = 1;
+			if (ImGui::SliderInt("Sectors", &m_Sectors, 3, 100, "%d")) m_SphereChanged = 1;
+			if (ImGui::SliderInt("Stack", &m_Stacks, 3, 100, "%d")) m_SphereChanged = 1;
 
 			if (ImGui::RadioButton("Don't draw lines", m_DrawLines == 0))
 			{
@@ -86,6 +93,11 @@ namespace test
 			{
 				m_Smooth = 0;
 				m_SphereChanged = 1;
+			}
+
+			if (ImGui::Button("Reset sphere modifications"))
+			{
+				ResetSphereModyfications();
 			}
 		}
 
@@ -157,16 +169,58 @@ namespace test
 			ImGui::SliderFloat("Z-axis rotation speed", &m_RotationSpeed.z, 0.0f, 10.0f, "%.1f", 1.0f);
 
 			ImGui::PopItemWidth();
+
+			if (ImGui::Button("Reset objct movement"))
+			{
+				ResetObjectMovement();
+			}
 		}
 
-		if (ImGui::Button("Reset"))
+		ImGui::Separator();
+
+		if (ImGui::Button("Reset all"))
 		{
-			m_OriginalModelRotation = glm::vec3(0.0f);
-			m_OriginalModelTranslation = glm::vec3(0.0f);
-			m_ModelScale = glm::vec3(1.0f);
+			ResetEnviromentSettings();
+			ResetObjectParameters();
+			ResetSphereModyfications();
+			ResetObjectMovement();
 		}
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+	void ObjectTest::ResetEnviromentSettings()
+	{
+		m_ClearColor = CLEARCOLOR;
+		m_Light = LIGHT;
+	}
+
+	void ObjectTest::ResetObjectParameters()
+	{
+		m_OriginalModelTranslation = MODELTRANSLATION;
+		m_OriginalModelRotation = MODELROTATION;
+		m_ModelScale = MODELSCALE;
+		m_Material = MATERIAL;
+	}
+
+	void ObjectTest::ResetSphereModyfications()
+	{
+		m_Sectors = SECTORS;
+		m_Stacks = STACKS;
+		m_DrawLines = DRAWLINES;
+		m_Smooth = SMOOTH;
+		m_SphereChanged = 1;
+	}
+
+	void ObjectTest::ResetObjectMovement()
+	{
+		std::fill(m_TypeOfMovementXYZ, m_TypeOfMovementXYZ + 3, 0);
+		std::fill(m_RotationAxiexXYZ, m_RotationAxiexXYZ + 3, 0);
+		std::fill(m_MovementSumTimeXYZ, m_MovementSumTimeXYZ + 3, 0);
+		std::fill(m_RotationSumTimeXYZ, m_RotationSumTimeXYZ + 3, 0);
+		m_MovemnetSpeed = MOVEMENTSPEED;
+		m_RotationSpeed = ROTATIONSPEED;
+		m_Radius = RADIUS;
 	}
 
 }

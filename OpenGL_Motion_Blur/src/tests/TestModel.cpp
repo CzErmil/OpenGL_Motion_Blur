@@ -126,9 +126,9 @@ namespace test {
 
 		if (m_SphereChanged) {
 			if (m_Smooth)
-				m_Sphere = make_unique<Sphere>(m_Sektors, m_Stack, 2, Surface::Smooth);
+				m_Sphere = make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Smooth);
 			else
-				m_Sphere = make_unique<Sphere>(m_Sektors, m_Stack, 2, Surface::Flat);
+				m_Sphere = make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Flat);
 
 			m_VertexBuffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
 			m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
