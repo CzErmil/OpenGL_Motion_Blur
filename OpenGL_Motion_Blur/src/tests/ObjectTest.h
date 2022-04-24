@@ -4,10 +4,13 @@
 
 #include "imgui/imgui.h"
 
+#include "VertexArrayObject.h"
+#include "IndexBuffer.h"
 #include "Texture.h"
 #include "Inputs.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Sphere.h"
 #include "Light.h"
 #include "Material.h"
 
@@ -42,6 +45,9 @@ namespace test
 		const int SECTORS{ 30 };
 		const int STACKS{ 30 };
 	protected:
+		std::unique_ptr<VertexArrayObject> m_VAO;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		std::unique_ptr<Texture> m_Texture;
 		std::unique_ptr<Model> m_Sphere;
 		glm::mat4 m_Proj, m_View, m_Model;
@@ -80,6 +86,11 @@ namespace test
 		void ResetObjectParameters();
 		void ResetSphereModyfications();
 		void ResetObjectMovement();
+
+		void calculatePosition(double deltaTime);
+		void calculateMovement(int typeOfMovement, int XYZ, double deltaTime);
+		void calculateRotation(double deltaTime);
+		void UpdateSphere();
 	};
 }
 
