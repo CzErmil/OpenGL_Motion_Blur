@@ -24,9 +24,12 @@ namespace test
 		m_TypeOfMovementXYZ{},
 		m_RotationAxiexXYZ{}
 	{
-		int WINDOW_WIDTH, WINDOW_HEIGHT;
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
 		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT_FACE);
+		glFrontFace(GL_CCW);
 
 		glLineWidth(2);
 

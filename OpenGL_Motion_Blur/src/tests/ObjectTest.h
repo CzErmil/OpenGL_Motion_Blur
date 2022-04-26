@@ -74,6 +74,7 @@ namespace test
 		bool m_Smooth;
 		int m_Sectors, m_Stacks;
 		bool m_SphereChanged;
+		int WINDOW_WIDTH, WINDOW_HEIGHT;
 	public:
 		ObjectTest();
 		virtual ~ObjectTest() {};

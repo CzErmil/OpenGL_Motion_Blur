@@ -232,6 +232,8 @@
     <None Include="src\shaders\MultiLayerMotionBlur_vertex.glsl" />
     <None Include="src\shaders\RenderArrayTexture.glsl" />
     <None Include="src\shaders\DirLight_fragment.glsl" />
+    <None Include="src\shaders\DrawLines_MultiLayers_geometry.glsl" />
+    <None Include="src\shaders\DrawLines_MultiLayers_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.png">

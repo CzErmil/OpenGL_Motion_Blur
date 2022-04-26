@@ -213,6 +213,8 @@
     <None Include="imgui.ini" />
     <None Include="src\shaders\DirLight_fragment.glsl" />
     <None Include="src\shaders\DrawLines_geometry.glsl" />
+    <None Include="src\shaders\DrawLines_MultiLayers_geometry.glsl" />
+    <None Include="src\shaders\DrawLines_MultiLayers_vertex.glsl" />
     <None Include="src\shaders\DrawLines_vertex.glsl" />
     <None Include="src\shaders\DrawLines_fragment.glsl" />
     <None Include="src\shaders\FragmentShader_texture_alpha.shader" />
