@@ -62,7 +62,7 @@ namespace test {
 
 	void MultiLayerMotionBlur::OnUpdate(double deltaTime)
 	{
-		for (int i = FRAME_LAYERS - 2; i > 0; i--)
+		for (int i = FRAME_LAYERS - 1; i > 0; i--)
 		{
 			m_Model[i] = m_Model[i-1];
 			m_MVP[i] = m_MVP[i-1];
