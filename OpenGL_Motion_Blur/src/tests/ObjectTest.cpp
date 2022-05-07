@@ -154,7 +154,7 @@ namespace test
 
 	void ObjectTest::OnRender()
 	{
-
+		glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
 	}
 
 	void ObjectTest::OnImGuiRender()

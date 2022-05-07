@@ -76,6 +76,7 @@ namespace test {
 
 	void MultiLayerMotionBlur::OnRender()
 	{
+		ObjectTest::OnRender();
 		m_FrameBuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
