@@ -74,14 +74,21 @@ void Camera::lookAt(glm::vec3 center)
 
 	glm::vec2 hvec = glm::vec2(m_vFront.x, m_vFront.z);
 
-	m_Yaw = glm::degrees(glm::acos(glm::dot(hvec, glm::vec2(1, 0)) / glm::length(hvec)));
+	auto dot = glm::dot(hvec, glm::vec2(1, 0));
+	dot = dot > 1.0 ? 1.0 : dot;
+	auto length = glm::length(hvec);
+
+	m_Yaw = glm::degrees(glm::acos(dot / length));
 
 	if (m_vFront.z < 0)
 	{
 		m_Yaw = -m_Yaw;
 	}
 
-	m_Pitch = glm::degrees(glm::acos(glm::dot(m_vFront, glm::vec3(hvec.x, 0, hvec.y)) / glm::length(hvec)));
+	dot = glm::dot(m_vFront, glm::vec3(hvec.x, 0, hvec.y));
+	dot = dot > 1.0 ? 1.0 : dot;
+
+	m_Pitch = glm::degrees(glm::acos(dot / length));
 
 	if (m_vFront.y < 0)
 	{
