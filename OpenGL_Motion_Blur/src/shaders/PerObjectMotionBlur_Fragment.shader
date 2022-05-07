@@ -6,6 +6,7 @@ uniform sampler2D u_texture;
 uniform sampler2D u_velocityBuffer;
 
 uniform int u_blurLevel;
+uniform float u_blurPower;
 
 out vec4 color;
 
@@ -13,11 +14,11 @@ void main(void)
 {
 	vec2 texelSize = 1.0 / vec2(textureSize(u_texture, 0));
 	vec2 screenTexCoords = gl_FragCoord.xy * texelSize;
-	vec2 blurVec = texture(u_velocityBuffer, screenTexCoords).xy/3;
+	vec2 blurVec = texture(u_velocityBuffer, screenTexCoords).xy * u_blurPower;
 
 	int n = u_blurLevel;
 
-	float speed = length(blurVec / texelSize);
+	//float speed = length(blurVec / texelSize);
 	//n = clamp(int(speed), 1, 100);
 
 	vec4 result = vec4(0, 0, 0, 0);
