@@ -36,7 +36,7 @@ void Camera::updateCamera()
 	if (m_Up)
 		m_Position += m_vUp * velocity;
 
-	if(m_Down)
+	if (m_Down)
 		m_Position -= m_vUp * velocity;
 }
 
@@ -64,6 +64,29 @@ glm::mat4 Camera::getView()
 {
 	updateCamera();
 	return glm::lookAt(m_Position, m_Position + m_vFront, m_vUp);
+}
+
+void Camera::lookAt(glm::vec3 center)
+{
+	m_vFront = glm::normalize(center - m_Position);
+	m_vRight = glm::normalize(glm::cross(m_vFront, m_vWorldUp));
+	m_vUp = glm::normalize(glm::cross(m_vRight, m_vFront));
+
+	glm::vec2 hvec = glm::vec2(m_vFront.x, m_vFront.z);
+
+	m_Yaw = glm::degrees(glm::acos(glm::dot(hvec, glm::vec2(1, 0)) / glm::length(hvec)));
+
+	if (m_vFront.z < 0)
+	{
+		m_Yaw = -m_Yaw;
+	}
+
+	m_Pitch = glm::degrees(glm::acos(glm::dot(m_vFront, glm::vec3(hvec.x, 0, hvec.y)) / glm::length(hvec)));
+
+	if (m_vFront.y < 0)
+	{
+		m_Pitch = -m_Pitch;
+	}
 }
 
 void Camera::updateCameraVectors()

@@ -23,6 +23,7 @@ class Model
 protected:
 	std::vector<Vertex> m_Vertices;
 	std::vector<unsigned int> m_Indecies;
+	glm::vec3 m_Postion;
 	glm::mat4 m_ModelPositionMatrix;
 	glm::mat4 m_ModelRotationMatrix;
 	glm::mat4 m_ModelScaleMatrix;
@@ -41,6 +42,7 @@ public:
 
 	inline std::vector<Vertex> getVertices() { return m_Vertices; }
 	inline std::vector<unsigned int> getIndecies() { return m_Indecies; }
+	inline glm::vec3 getPosition() { return m_Postion; }
 	inline glm::mat4 getModelMatrix() { return m_ModelPositionMatrix * m_ModelRotationMatrix * m_ModelScaleMatrix; }
 	inline int getSize() { return m_Vertices.size() * sizeof(Vertex); };
 	inline void* getData() { return m_Vertices.data(); };

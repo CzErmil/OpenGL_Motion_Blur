@@ -37,9 +37,12 @@ public:
 	void setMouseMiddleButton(int v) { m_MouseMiddleButton = v; }
 
 	void processMouseMovment(double x, double y, double lastX, double lastY);
-private:
-	inline void setPosition(float x, float y, float z) { m_Position = glm::vec3(x, y, z); }
-	inline void setProj(float fov, float aspect, float near, float far) { m_Proj = glm::perspective(fov, aspect, near, far); }
 
+	inline void setPosition(float x, float y, float z) { m_Position = glm::vec3(x, y, z); }
+	inline void setPosition(glm::vec3 position) { m_Position = position; }
+	inline void setProj(float fov, float aspect, float near, float far) { m_Proj = glm::perspective(fov, aspect, near, far); }
+	void lookAt(glm::vec3 center);
+
+private:
 	void updateCameraVectors();
 };

@@ -1,6 +1,7 @@
 #include "Model.h"
 
 Model::Model() :
+	m_Postion(glm::vec3(0.0f)),
 	m_ModelMatrix(1.0f),
 	m_ModelPositionMatrix(glm::mat4(1)),
 	m_ModelRotationMatrix(glm::mat4(1)),
@@ -30,7 +31,8 @@ void Model::scale(float x, float y, float z)
 
 void Model::setPosition(float x, float y, float z)
 {
-	m_ModelPositionMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
+	m_Postion = glm::vec3(x, y, z);
+	m_ModelPositionMatrix = glm::translate(glm::mat4(1.0f), m_Postion);
 }
 
 void Model::setRotation(float x, float y, float z)

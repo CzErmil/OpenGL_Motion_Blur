@@ -70,14 +70,25 @@ namespace test
 		double m_DeltaTime;
 		double m_MovementSumTimeXYZ[3];
 		double m_RotationSumTimeXYZ[3];
+		float m_CameraHorizontalMovementRadius;
+		float m_CameraVerticalMovementRadius;
+		float m_CameraHorizontalRotationSpeed;
+		int m_CameraVerticalTypeOfMovement;
+		float m_CameraVerticalMovementSpeed;
+		double m_CameraHorizontalRotationSumTime;
+		double m_CameraVerticalMovementSumTime;
 		bool m_DrawLines;
 		bool m_Smooth;
 		int m_Sectors, m_Stacks;
 		bool m_SphereChanged;
+		bool m_PredefinedCameraMovement;
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
 	public:
 		ObjectTest();
 		virtual ~ObjectTest() {};
+
+		void BindInput();
+		void UnbindInput();
 
 		void OnUpdate(double deltaTime) override;
 		void OnRender() override;

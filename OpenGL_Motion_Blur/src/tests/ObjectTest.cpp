@@ -2,7 +2,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace test 
+namespace test
 {
 	ObjectTest::ObjectTest() :
 		m_Light{ LIGHT },
@@ -15,14 +15,19 @@ namespace test
 		m_RotationSpeed{ ROTATIONSPEED },
 		m_Radius{ RADIUS },
 		m_DeltaTime(0),
+		m_CameraHorizontalMovementRadius(5.0f),
+		m_CameraVerticalMovementRadius(3.0f),
+		m_CameraHorizontalRotationSpeed(0.0f),
+		m_CameraVerticalMovementSumTime(1.0f),
 		m_Camera(&m_DeltaTime),
 		m_DrawLines(DRAWLINES),
 		m_Smooth(1),
 		m_Sectors(SECTORS),
 		m_Stacks(STACKS),
-		m_SphereChanged(1),
+		m_SphereChanged(true),
 		m_TypeOfMovementXYZ{},
-		m_RotationAxiexXYZ{}
+		m_RotationAxiexXYZ{},
+		m_PredefinedCameraMovement(false)
 	{
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
 		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
@@ -51,6 +56,14 @@ namespace test
 
 		m_Proj = m_Camera.getProj();
 
+		BindInput();
+
+		m_Texture = std::make_unique<Texture>("res/textures/earth.bmp", GL_LINEAR);
+		m_Texture->Bind(0);
+	}
+
+	void ObjectTest::BindInput()
+	{
 		std::function<void(int)> w = std::bind(&Camera::setForward, &m_Camera, std::placeholders::_1);
 		std::function<void(int)> s = std::bind(&Camera::setBackward, &m_Camera, std::placeholders::_1);
 		std::function<void(int)> a = std::bind(&Camera::setLeft, &m_Camera, std::placeholders::_1);
@@ -65,9 +78,15 @@ namespace test
 		m_Inputs.setShiftKeyCallback(shift);
 		m_Inputs.setMouseButtonCallbacks(GLFW_MOUSE_BUTTON_3, mouseMiddleButton);
 		m_Inputs.setCursorCullbuck(cursor);
+	}
 
-		m_Texture = std::make_unique<Texture>("res/textures/earth.bmp", GL_LINEAR);
-		m_Texture->Bind(0);
+	void ObjectTest::UnbindInput()
+	{
+		m_Inputs.setWSADKeyCallbacks(nullptr, nullptr, nullptr, nullptr);
+		m_Inputs.setSpaceKeyCallback(nullptr);
+		m_Inputs.setShiftKeyCallback(nullptr);
+		m_Inputs.setMouseButtonCallbacks(GLFW_MOUSE_BUTTON_3, nullptr);
+		m_Inputs.setCursorCullbuck(nullptr);
 	}
 
 	void ObjectTest::OnUpdate(double deltaTime)
@@ -85,6 +104,42 @@ namespace test
 			m_VertexBuffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
 			m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
 			m_SphereChanged = 0;
+		}
+
+		if (m_PredefinedCameraMovement)
+		{
+			m_CameraHorizontalRotationSumTime += deltaTime * m_CameraHorizontalRotationSpeed;
+			m_CameraVerticalMovementSumTime += deltaTime * m_CameraVerticalMovementSpeed;
+
+			glm::vec3 pos = glm::vec3(
+				sin(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius,
+				0.0f,
+				cos(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius
+			);
+			switch (m_CameraVerticalTypeOfMovement)
+			{
+			case 0:
+				pos = glm::vec3(pos.x, 0.0f, pos.z);
+				break;
+			case 1:
+				pos = glm::vec3(
+					pos.x, 
+					sin(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
+					pos.z
+				);
+				break;
+			case 2:
+				pos = glm::vec3(
+					pos.x,
+					cos(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
+					pos.z
+				);
+				break;
+			}
+
+			m_Camera.setPosition(pos);
+
+			m_Camera.lookAt(glm::vec3(0.0f));
 		}
 
 		m_Sphere->setPosition(m_ModelTranslation[0], m_ModelTranslation[1], m_ModelTranslation[2]);
@@ -238,6 +293,59 @@ namespace test
 			if (ImGui::Button("Reset objct movement"))
 			{
 				ResetObjectMovement();
+			}
+		}
+
+		if (ImGui::CollapsingHeader("Camera movement", ImGuiTreeNodeFlags_None))
+		{
+			if (ImGui::RadioButton("User controlled camera movement", m_PredefinedCameraMovement == false))
+			{
+				BindInput();
+				m_PredefinedCameraMovement = false;
+			}
+
+			if (ImGui::RadioButton("Predefined camera movement", m_PredefinedCameraMovement == true))
+			{
+				UnbindInput();
+				m_PredefinedCameraMovement = true;
+			}
+
+			if (ImGui::CollapsingHeader("Predefined camera movement settings", &m_PredefinedCameraMovement))
+			{
+				ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.7f);
+
+				ImGui::SliderFloat("Radius of horizontal camera movement", &m_CameraHorizontalMovementRadius, 3.0f, 20.0f, "%.1f", 1.0f);
+
+				ImGui::SliderFloat("Horizontal rotation speed", &m_CameraHorizontalRotationSpeed, 0.0f, 10.0f, "%.1f", 1.0f);
+
+				ImGui::Separator();
+				ImGui::Text("Vertical type of movement");
+
+				if (ImGui::RadioButton("static", m_CameraVerticalTypeOfMovement == 0))
+				{
+					m_CameraVerticalTypeOfMovement = 0;
+				} ImGui::SameLine();
+
+				if (ImGui::RadioButton("sin(t)", m_CameraVerticalTypeOfMovement == 1))
+				{
+					m_CameraVerticalTypeOfMovement = 1;
+				} ImGui::SameLine();
+
+				if (ImGui::RadioButton("cos(t)", m_CameraVerticalTypeOfMovement == 2))
+				{
+					m_CameraVerticalTypeOfMovement = 2;
+				}
+
+				ImGui::SliderFloat("Vertical movment radius", &m_CameraVerticalMovementRadius, 0.0f, 10.0f, "%.1f", 1.0f);
+
+				ImGui::SliderFloat("Vertical movement speed", &m_CameraVerticalMovementSpeed, 0.0f, 10.0f, "%.1f", 1.0f);
+
+				ImGui::PopItemWidth();
+
+				if (ImGui::Button("Reset predefined camera movement"))
+				{
+					ResetObjectMovement();
+				}
 			}
 		}
 
