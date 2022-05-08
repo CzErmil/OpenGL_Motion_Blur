@@ -44,10 +44,5 @@ void main(void)
 		result = texture(u_texture, vs_textureCoord);
 	}
 
-
-
-
 	color = result;
-	//color = texture(u_velocityBuffer, vs_textureCoord);
-	//color = texture(u_texture, vs_textureCoord);
 }
