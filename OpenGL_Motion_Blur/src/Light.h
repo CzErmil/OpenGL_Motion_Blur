@@ -2,7 +2,7 @@
 
 #include "glm/gtx/transform.hpp"
 
-static struct DirectionalLight
+struct DirectionalLight
 {
 	glm::vec3 direction;
 
@@ -11,7 +11,7 @@ static struct DirectionalLight
 	glm::vec3 specular;
 };
 
-static struct PointLight
+struct PointLight
 {
 	glm::vec3 position;
 

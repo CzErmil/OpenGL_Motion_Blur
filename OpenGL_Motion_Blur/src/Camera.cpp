@@ -44,8 +44,8 @@ void Camera::processMouseMovment(double x, double y, double lastX, double lastY)
 {
 	if (m_MouseMiddleButton)
 	{
-		double xOffset = (x - lastX) * m_MouseSensitivity;
-		double yOffset = (y - lastY) * m_MouseSensitivity;
+		float xOffset = (x - lastX) * m_MouseSensitivity;
+		float yOffset = (y - lastY) * m_MouseSensitivity;
 
 		m_Yaw += xOffset;
 		m_Pitch -= yOffset;
@@ -75,7 +75,7 @@ void Camera::lookAt(glm::vec3 center)
 	glm::vec2 hvec = glm::vec2(m_vFront.x, m_vFront.z);
 
 	auto dot = glm::dot(hvec, glm::vec2(1, 0));
-	dot = dot > 1.0 ? 1.0 : dot;
+	dot = dot > 1.0 ? 1.0f : dot;
 	auto length = glm::length(hvec);
 
 	m_Yaw = glm::degrees(glm::acos(dot / length));
@@ -86,7 +86,7 @@ void Camera::lookAt(glm::vec3 center)
 	}
 
 	dot = glm::dot(m_vFront, glm::vec3(hvec.x, 0, hvec.y));
-	dot = dot > 1.0 ? 1.0 : dot;
+	dot = dot > 1.0 ? 1.0f : dot;
 
 	m_Pitch = glm::degrees(glm::acos(dot / length));
 

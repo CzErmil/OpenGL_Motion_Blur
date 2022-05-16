@@ -6,7 +6,7 @@ Texture::Texture(const std::string& fileName)
 	: Texture(fileName, GL_NEAREST) {}
 
 Texture::Texture(const std::string& fileName, int parm)
-	: m_ID(0), m_FileName(fileName), m_Slot(0), m_Width(0), m_Height(0), m_BytesPerPixel(0), m_LocalBuffer(nullptr)
+	: m_ID(0), m_Count(1), m_FileName(fileName), m_Slot(0), m_Width(0), m_Height(0), m_BytesPerPixel(0), m_LocalBuffer(nullptr)
 {
 	stbi_set_flip_vertically_on_load(1);
 	m_LocalBuffer = stbi_load(m_FileName.c_str(), &m_Width, &m_Height, &m_BytesPerPixel, 4);
