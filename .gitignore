@@ -359,3 +359,4 @@ MigrationBackup/
 !Dependencies/GLEW/lib/
 !Dependencies/GLEW/lib/Release/
 !Dependencies/GLEW/lib/Release/x64/
+/OpenGL_Motion_Blur/src/Vendor/glm/out/build/x64-Debug
