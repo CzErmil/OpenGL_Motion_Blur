@@ -209,7 +209,7 @@ namespace test
 				m_SphereChanged = 1;
 			} ImGui::SameLine();
 
-			if (ImGui::RadioButton("Smooth Flat", m_Smooth == 0))
+			if (ImGui::RadioButton("Flat surface", m_Smooth == 0))
 			{
 				m_Smooth = 0;
 				m_SphereChanged = 1;
