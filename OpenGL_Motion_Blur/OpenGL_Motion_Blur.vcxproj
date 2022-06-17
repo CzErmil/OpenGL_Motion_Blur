@@ -159,10 +159,8 @@
     <ClCompile Include="src\tests\AccumulateMotionBlur.cpp" />
     <ClCompile Include="src\tests\CameraMotionBlur.cpp" />
     <ClCompile Include="src\tests\MultiLayerMotionBlur.cpp" />
-    <ClCompile Include="src\tests\TestDepthBuffer.cpp" />
     <ClCompile Include="src\tests\TestModel.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
-    <ClCompile Include="src\tests\VectorMotionBlur.cpp" />
     <ClCompile Include="src\tests\PerObjectMotionBlur.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Vendor\imgui\imgui.cpp" />
@@ -191,10 +189,8 @@
     <ClInclude Include="src\tests\CameraMotionBlur.h" />
     <ClInclude Include="src\tests\MultiLayerMotionBlur.h" />
     <ClInclude Include="src\tests\PerObjectMotionBlur.h" />
-    <ClInclude Include="src\tests\TestDepthBuffer.h" />
     <ClInclude Include="src\tests\TestModel.h" />
     <ClInclude Include="src\tests\Test.h" />
-    <ClInclude Include="src\tests\VectorMotionBlur.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Vendor\imgui\imconfig.h" />
     <ClInclude Include="src\Vendor\imgui\imgui.h" />
@@ -250,7 +246,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\earth.bmp" />
-    <Image Include="res\textures\grass.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

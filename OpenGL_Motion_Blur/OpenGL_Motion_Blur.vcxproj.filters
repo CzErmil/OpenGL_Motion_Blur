@@ -63,12 +63,6 @@
     <ClCompile Include="src\tests\TestModel.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="src\tests\TestDepthBuffer.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tests\VectorMotionBlur.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="src\tests\AccumulateMotionBlur.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -155,12 +149,6 @@
     <ClInclude Include="src\tests\TestModel.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\tests\TestDepthBuffer.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tests\VectorMotionBlur.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="src\tests\AccumulateMotionBlur.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -236,9 +224,6 @@
     <None Include="src\shaders\DrawLines_MultiLayers_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\grass.png">
-      <Filter>Pliki zasobów</Filter>
-    </Image>
     <Image Include="res\textures\earth.bmp">
       <Filter>Pliki zasobów</Filter>
     </Image>

@@ -6,9 +6,7 @@
 #include <iostream>
 
 #include "tests/TestModel.h"
-#include "tests/TestDepthBuffer.h"
 #include "tests/AccumulateMotionBlur.h"
-#include "tests/VectorMotionBlur.h"
 #include "tests/CameraMotionBlur.h"
 #include "tests/PerObjectMotionBlur.h"
 #include "tests/MultiLayerMotionBlur.h"
@@ -88,9 +86,7 @@ int main(void)
     currentTest = testMenu;
 
     testMenu->RegisterTest<test::TestModel>("Test Model");
-    testMenu->RegisterTest<test::TestDepthBuffer>("Test Depth Buffer");
     testMenu->RegisterTest<test::AccumulateMotionBlur>("Accumulate Motion Blur");
-    testMenu->RegisterTest<test::VectorMotionBlur>("Vector Motion Blur");
     testMenu->RegisterTest<test::CameraMotionBlur>("Camera Motion Blur");
     testMenu->RegisterTest<test::PerObjectMotionBlur>("Per-object Motion Blur");
     testMenu->RegisterTest<test::MultiLayerMotionBlur>("Multi-Layer Motion Blur");
@@ -105,7 +101,6 @@ int main(void)
         deltaTime = curentTime - lastTime;
         lastTime = curentTime;
 
-        //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
