@@ -25,9 +25,6 @@ namespace test {
 		std::unique_ptr<FrameBuffer> m_FrameBuffer[2];
 		std::unique_ptr<Model> m_Sphere;
 		glm::mat4 m_prevMVP;
-		bool m_MotionBlurSettingsWindow;
-		int m_MotionBlurLevel;
-		float m_MotionBlurPower;
 	public:
 		PerObjectMotionBlur();
 		~PerObjectMotionBlur();

@@ -23,9 +23,6 @@ namespace test {
 		std::unique_ptr<ShaderProgram> m_Program[2];
 		std::unique_ptr<FrameBuffer> m_FrameBuffer[2];
 		glm::mat4 m_PrevMVP;
-		bool m_MotionBlurSettingsWindow;
-		int m_MotionBlurLevel;
-		float m_MotionBlurPower;
 	public:
 		CameraMotionBlur();
 		~CameraMotionBlur();

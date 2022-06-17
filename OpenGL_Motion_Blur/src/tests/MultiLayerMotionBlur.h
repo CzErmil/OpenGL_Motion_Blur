@@ -16,8 +16,6 @@
 #include "Model.h"
 #include "Sphere.h"
 
-
-
 namespace test {
 
 	#define FRAME_LAYERS 16

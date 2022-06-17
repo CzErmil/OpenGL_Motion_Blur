@@ -27,7 +27,10 @@ namespace test
 		m_SphereChanged(true),
 		m_TypeOfMovementXYZ{},
 		m_RotationAxiexXYZ{},
-		m_PredefinedCameraMovement(false)
+		m_PredefinedCameraMovement(false),
+		m_MotionBlurSettingsWindow(true),
+		m_MotionBlurLevel(8),
+		m_MotionBlurPower(1.0f)
 	{
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
 		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
@@ -123,7 +126,7 @@ namespace test
 				break;
 			case 1:
 				pos = glm::vec3(
-					pos.x, 
+					pos.x,
 					sin(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
 					pos.z
 				);
@@ -159,6 +162,117 @@ namespace test
 
 	void ObjectTest::OnImGuiRender()
 	{
+		ImGuiSetEnviromentSettings();
+		ImGuiSetObjectParameters();
+		ImGuiSetSphereModifications();
+		ImGuiSetObjectMovement();
+		ImGuiSetCameraMovement();
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Reset all"))
+		{
+			ResetEnviromentSettings();
+			ResetObjectParameters();
+			ResetSphereModyfications();
+			ResetObjectMovement();
+		}
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+	void ObjectTest::ResetEnviromentSettings()
+	{
+		m_ClearColor = CLEARCOLOR;
+		m_Light = LIGHT;
+	}
+
+	void ObjectTest::ResetObjectParameters()
+	{
+		m_OriginalModelTranslation = MODELTRANSLATION;
+		m_OriginalModelRotation = MODELROTATION;
+		m_ModelScale = MODELSCALE;
+		m_Material = MATERIAL;
+	}
+
+	void ObjectTest::ResetSphereModyfications()
+	{
+		m_Sectors = SECTORS;
+		m_Stacks = STACKS;
+		m_DrawLines = DRAWLINES;
+		m_Smooth = SMOOTH;
+		m_SphereChanged = 1;
+	}
+
+	void ObjectTest::ResetObjectMovement()
+	{
+		std::fill(m_TypeOfMovementXYZ, m_TypeOfMovementXYZ + 3, 0);
+		std::fill(m_RotationAxiexXYZ, m_RotationAxiexXYZ + 3, 0);
+		std::fill(m_MovementSumTimeXYZ, m_MovementSumTimeXYZ + 3, 0);
+		std::fill(m_RotationSumTimeXYZ, m_RotationSumTimeXYZ + 3, 0);
+		m_MovemnetSpeed = MOVEMENTSPEED;
+		m_RotationSpeed = ROTATIONSPEED;
+		m_Radius = RADIUS;
+	}
+
+	void ObjectTest::ResetCameraMovement()
+	{
+	}
+
+	void ObjectTest::calculatePosition(double deltaTime)
+	{
+		calculateMovement(m_TypeOfMovementXYZ[0], 0, deltaTime);
+		calculateMovement(m_TypeOfMovementXYZ[1], 1, deltaTime);
+		calculateMovement(m_TypeOfMovementXYZ[2], 2, deltaTime);
+		calculateRotation(deltaTime);
+	}
+
+	void ObjectTest::calculateMovement(int typeOfMovement, int XYZ, double deltaTime)
+	{
+		m_MovementSumTimeXYZ[XYZ] += deltaTime * m_MovemnetSpeed[XYZ];
+
+		switch (typeOfMovement)
+		{
+		case 0:
+			m_ModelTranslation[XYZ] = m_OriginalModelTranslation[XYZ];
+			break;
+		case 1:
+			m_ModelTranslation[XYZ] = m_OriginalModelTranslation[XYZ] + sinf(m_MovementSumTimeXYZ[XYZ]) * m_Radius[XYZ];
+			break;
+		case 2:
+			m_ModelTranslation[XYZ] = m_OriginalModelTranslation[XYZ] + cosf(m_MovementSumTimeXYZ[XYZ]) * m_Radius[XYZ];
+			break;
+		default:
+			break;
+		}
+	}
+
+	void ObjectTest::calculateRotation(double deltaTime)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			m_RotationSumTimeXYZ[i] += deltaTime * m_RotationSpeed[i];
+
+			if (m_RotationAxiexXYZ[i])
+			{
+				m_ModelRotation[i] = fmod(m_OriginalModelRotation[i] + 180 + m_RotationSumTimeXYZ[i] * 30, 360) - 180;
+			}
+			else
+			{
+				m_ModelRotation[i] = m_OriginalModelRotation[i];
+				m_RotationSumTimeXYZ[i] = 0;
+			}
+
+		}
+	}
+
+	void ObjectTest::UpdateSphere()
+	{
+
+	}
+
+	void ObjectTest::ImGuiSetEnviromentSettings()
+	{
 		if (ImGui::CollapsingHeader("Enviroment settings", ImGuiTreeNodeFlags_None))
 		{
 			ImGui::ColorEdit4("Clear color", glm::value_ptr(m_ClearColor));
@@ -172,7 +286,10 @@ namespace test
 				ResetEnviromentSettings();
 			}
 		}
+	}
 
+	void ObjectTest::ImGuiSetObjectParameters()
+	{
 		if (ImGui::CollapsingHeader("Object parameters", ImGuiTreeNodeFlags_None))
 		{
 			ImGui::SliderFloat3("Model translation", glm::value_ptr(m_OriginalModelTranslation), -10.0f, 10.0f, "%.1f", 1.0f);
@@ -187,7 +304,10 @@ namespace test
 				ResetObjectParameters();
 			}
 		}
+	}
 
+	void ObjectTest::ImGuiSetSphereModifications()
+	{
 		if (ImGui::CollapsingHeader("Sphere modifications", ImGuiTreeNodeFlags_None))
 		{
 			if (ImGui::SliderInt("Sectors", &m_Sectors, 3, 100, "%d")) m_SphereChanged = 1;
@@ -220,8 +340,11 @@ namespace test
 				ResetSphereModyfications();
 			}
 		}
+	}
 
-		if (ImGui::CollapsingHeader("Objct movement", ImGuiTreeNodeFlags_None))
+	void ObjectTest::ImGuiSetObjectMovement()
+	{
+		if (ImGui::CollapsingHeader("Object movement", ImGuiTreeNodeFlags_None))
 		{
 			ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.7f);
 
@@ -295,7 +418,10 @@ namespace test
 				ResetObjectMovement();
 			}
 		}
+	}
 
+	void ObjectTest::ImGuiSetCameraMovement()
+	{
 		if (ImGui::CollapsingHeader("Camera movement", ImGuiTreeNodeFlags_None))
 		{
 			if (ImGui::RadioButton("User controlled camera movement", m_PredefinedCameraMovement == false))
@@ -348,103 +474,23 @@ namespace test
 				}
 			}
 		}
+	}
 
-		ImGui::Separator();
-
-		if (ImGui::Button("Reset all"))
+	void ObjectTest::ImGuiShowMotionBlurSettings()
+	{
+		if (m_MotionBlurSettingsWindow)
 		{
-			ResetEnviromentSettings();
-			ResetObjectParameters();
-			ResetSphereModyfications();
-			ResetObjectMovement();
+			ImGui::Begin("Motion Blur Settings", &m_MotionBlurSettingsWindow);
+
+			ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.6f);
+
+			ImGui::SliderInt("Motion Blur Level", &m_MotionBlurLevel, 1, 100, "%d");
+
+			ImGui::SliderFloat("Motion Blur Power", &m_MotionBlurPower, 0.0f, 10.0f, "%.1f", 1.0f);
+
+			ImGui::PopItemWidth();
+
+			ImGui::End();
 		}
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	}
-
-	void ObjectTest::ResetEnviromentSettings()
-	{
-		m_ClearColor = CLEARCOLOR;
-		m_Light = LIGHT;
-	}
-
-	void ObjectTest::ResetObjectParameters()
-	{
-		m_OriginalModelTranslation = MODELTRANSLATION;
-		m_OriginalModelRotation = MODELROTATION;
-		m_ModelScale = MODELSCALE;
-		m_Material = MATERIAL;
-	}
-
-	void ObjectTest::ResetSphereModyfications()
-	{
-		m_Sectors = SECTORS;
-		m_Stacks = STACKS;
-		m_DrawLines = DRAWLINES;
-		m_Smooth = SMOOTH;
-		m_SphereChanged = 1;
-	}
-
-	void ObjectTest::ResetObjectMovement()
-	{
-		std::fill(m_TypeOfMovementXYZ, m_TypeOfMovementXYZ + 3, 0);
-		std::fill(m_RotationAxiexXYZ, m_RotationAxiexXYZ + 3, 0);
-		std::fill(m_MovementSumTimeXYZ, m_MovementSumTimeXYZ + 3, 0);
-		std::fill(m_RotationSumTimeXYZ, m_RotationSumTimeXYZ + 3, 0);
-		m_MovemnetSpeed = MOVEMENTSPEED;
-		m_RotationSpeed = ROTATIONSPEED;
-		m_Radius = RADIUS;
-	}
-
-	void ObjectTest::calculatePosition(double deltaTime)
-	{
-		calculateMovement(m_TypeOfMovementXYZ[0], 0, deltaTime);
-		calculateMovement(m_TypeOfMovementXYZ[1], 1, deltaTime);
-		calculateMovement(m_TypeOfMovementXYZ[2], 2, deltaTime);
-		calculateRotation(deltaTime);
-	}
-
-	void ObjectTest::calculateMovement(int typeOfMovement, int XYZ, double deltaTime)
-	{
-		m_MovementSumTimeXYZ[XYZ] += deltaTime * m_MovemnetSpeed[XYZ];
-
-		switch (typeOfMovement)
-		{
-		case 0:
-			m_ModelTranslation[XYZ] = m_OriginalModelTranslation[XYZ];
-			break;
-		case 1:
-			m_ModelTranslation[XYZ] = m_OriginalModelTranslation[XYZ] + sinf(m_MovementSumTimeXYZ[XYZ]) * m_Radius[XYZ];
-			break;
-		case 2:
-			m_ModelTranslation[XYZ] = m_OriginalModelTranslation[XYZ] + cosf(m_MovementSumTimeXYZ[XYZ]) * m_Radius[XYZ];
-			break;
-		default:
-			break;
-		}
-	}
-
-	void ObjectTest::calculateRotation(double deltaTime)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			m_RotationSumTimeXYZ[i] += deltaTime * m_RotationSpeed[i];
-
-			if (m_RotationAxiexXYZ[i])
-			{
-				m_ModelRotation[i] = fmod(m_OriginalModelRotation[i] + 180 + m_RotationSumTimeXYZ[i] * 30, 360) - 180;
-			}
-			else
-			{
-				m_ModelRotation[i] = m_OriginalModelRotation[i];
-				m_RotationSumTimeXYZ[i] = 0;
-			}
-
-		}
-	}
-
-	void ObjectTest::UpdateSphere()
-	{
-
 	}
 }

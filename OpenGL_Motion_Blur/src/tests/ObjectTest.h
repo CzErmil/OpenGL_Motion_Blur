@@ -82,6 +82,9 @@ namespace test
 		int m_Sectors, m_Stacks;
 		bool m_SphereChanged;
 		bool m_PredefinedCameraMovement;
+		bool m_MotionBlurSettingsWindow;
+		int m_MotionBlurLevel;
+		float m_MotionBlurPower;
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
 	public:
 		ObjectTest();
@@ -98,11 +101,20 @@ namespace test
 		void ResetObjectParameters();
 		void ResetSphereModyfications();
 		void ResetObjectMovement();
+		void ResetCameraMovement();
 
 		void calculatePosition(double deltaTime);
 		void calculateMovement(int typeOfMovement, int XYZ, double deltaTime);
 		void calculateRotation(double deltaTime);
 		void UpdateSphere();
+
+		void ImGuiSetEnviromentSettings();
+		void ImGuiSetObjectParameters();
+		void ImGuiSetSphereModifications();
+		void ImGuiSetObjectMovement();
+		void ImGuiSetCameraMovement();
+
+		void ImGuiShowMotionBlurSettings();
 	};
 }
 

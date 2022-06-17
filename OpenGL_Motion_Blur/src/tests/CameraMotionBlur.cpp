@@ -8,10 +8,7 @@
 
 namespace test {
 
-	CameraMotionBlur::CameraMotionBlur() :
-		m_MotionBlurSettingsWindow(true),
-		m_MotionBlurLevel(8),
-		m_MotionBlurPower(1.0f)
+	CameraMotionBlur::CameraMotionBlur()
 	{
 		Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/TestModel_vertex.glsl");
 		Shader fragmentShader = Shader(GL_FRAGMENT_SHADER, "src/shaders/DirLight_fragment.glsl");
@@ -106,19 +103,6 @@ namespace test {
 	{
 		ObjectTest::OnImGuiRender();
 
-		if (m_MotionBlurSettingsWindow)
-		{
-			ImGui::Begin("Motion Blur Settings", &m_MotionBlurSettingsWindow);
-
-			ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.6f);
-
-			ImGui::SliderInt("Motion Blur Level", &m_MotionBlurLevel, 1, 100, "%d");
-
-			ImGui::SliderFloat("Motion Blur Power", &m_MotionBlurPower, 0.0f, 10.0f, "%.1f", 1.0f);
-
-			ImGui::PopItemWidth();
-
-			ImGui::End();
-		}
+		ObjectTest::ImGuiShowMotionBlurSettings();
 	}
 }
