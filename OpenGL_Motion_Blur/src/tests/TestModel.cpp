@@ -46,8 +46,6 @@ namespace test {
 
 		m_Program[0]->SetUniform1i("u_texture", 0);
 
-		m_Program[0]->SetUniform3fv("material.ambient", m_Material.ambient);
-		m_Program[0]->SetUniform3fv("material.diffuse", m_Material.diffuse);
 		m_Program[0]->SetUniform3fv("material.specular", m_Material.specular);
 		m_Program[0]->SetUniform1f("material.shininess", m_Material.shininess);
 
