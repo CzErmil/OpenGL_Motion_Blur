@@ -98,15 +98,9 @@ namespace test
 
 		calculatePosition(deltaTime);
 
-		if (m_SphereChanged) {
-			if (m_Smooth)
-				m_Sphere = std::make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Smooth);
-			else
-				m_Sphere = std::make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Flat);
-
-			m_VertexBuffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
-			m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
-			m_SphereChanged = 0;
+		if (m_SphereChanged) 
+		{
+			UpdateSphere();
 		}
 
 		if (m_PredefinedCameraMovement)
@@ -268,7 +262,14 @@ namespace test
 
 	void ObjectTest::UpdateSphere()
 	{
+		if (m_Smooth)
+			m_Sphere = std::make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Smooth);
+		else
+			m_Sphere = std::make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Flat);
 
+		m_VertexBuffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
+		m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
+		m_SphereChanged = 0;
 	}
 
 	void ObjectTest::ImGuiSetEnviromentSettings()
