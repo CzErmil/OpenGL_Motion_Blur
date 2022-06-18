@@ -28,7 +28,6 @@ namespace test
 		m_TypeOfMovementXYZ{},
 		m_RotationAxiexXYZ{},
 		m_PredefinedCameraMovement(false),
-		m_MotionBlurSettingsWindow(true),
 		m_MotionBlurLevel(8),
 		m_MotionBlurPower(1.0f)
 	{
@@ -98,7 +97,7 @@ namespace test
 
 		calculatePosition(deltaTime);
 
-		if (m_SphereChanged) 
+		if (m_SphereChanged)
 		{
 			UpdateSphere();
 		}
@@ -156,6 +155,8 @@ namespace test
 
 	void ObjectTest::OnImGuiRender()
 	{
+		ImGui::SetWindowPos({ 0,0 });
+
 		ImGuiSetEnviromentSettings();
 		ImGuiSetObjectParameters();
 		ImGuiSetSphereModifications();
@@ -277,7 +278,7 @@ namespace test
 		if (ImGui::CollapsingHeader("Enviroment settings", ImGuiTreeNodeFlags_None))
 		{
 			ImGui::ColorEdit4("Clear color", glm::value_ptr(m_ClearColor));
-			ImGui::SliderFloat3("Light scaling", glm::value_ptr(m_Light.direction), -1.0f, 1.0f, "%.3f", 1.0f);
+			ImGui::SliderFloat3("Light direction", glm::value_ptr(m_Light.direction), -1.0f, 1.0f, "%.3f", 1.0f);
 			ImGui::ColorEdit3("Light ambient", glm::value_ptr(m_Light.ambient));
 			ImGui::ColorEdit3("Light diffuse", glm::value_ptr(m_Light.diffuse));
 			ImGui::ColorEdit3("Light specular", glm::value_ptr(m_Light.specular));
@@ -479,19 +480,18 @@ namespace test
 
 	void ObjectTest::ImGuiShowMotionBlurSettings()
 	{
-		if (m_MotionBlurSettingsWindow)
-		{
-			ImGui::Begin("Motion Blur Settings", &m_MotionBlurSettingsWindow);
+		ImGui::Begin("Motion Blur Settings", nullptr, ImGuiWindowFlags_NoMove);
 
-			ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.6f);
+		auto windowSize = ImGui::GetWindowSize();
+		ImGui::SetWindowPos({ WINDOW_WIDTH - windowSize.x, 0 });
 
-			ImGui::SliderInt("Motion Blur Level", &m_MotionBlurLevel, 1, 100, "%d");
+		ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.6f);
 
-			ImGui::SliderFloat("Motion Blur Power", &m_MotionBlurPower, 0.0f, 10.0f, "%.1f", 1.0f);
+		ImGui::SliderInt("Motion Blur Level", &m_MotionBlurLevel, 1, 100, "%d");
+		ImGui::SliderFloat("Motion Blur Power", &m_MotionBlurPower, 0.0f, 10.0f, "%.1f", 1.0f);
 
-			ImGui::PopItemWidth();
+		ImGui::PopItemWidth();
 
-			ImGui::End();
-		}
+		ImGui::End();
 	}
 }

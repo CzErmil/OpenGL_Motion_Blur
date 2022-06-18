@@ -57,7 +57,6 @@ int main(void)
             glViewport(0,0,width,height);
             WINDOW_WIDTH = width;
             WINDOW_HEIGHT = height;
-            std::cout << WINDOW_WIDTH << " x " << WINDOW_HEIGHT << "\n";
         });
 
     if (glewInit() != GLEW_OK) {
@@ -112,7 +111,7 @@ int main(void)
         {
             currentTest->OnUpdate(deltaTime);
             currentTest->OnRender();
-            ImGui::Begin("Menu");
+            ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoMove);
             if (currentTest != testMenu && ImGui::Button("<-"))
             {
                 delete currentTest;

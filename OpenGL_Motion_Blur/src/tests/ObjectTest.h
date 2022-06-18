@@ -82,7 +82,6 @@ namespace test
 		int m_Sectors, m_Stacks;
 		bool m_SphereChanged;
 		bool m_PredefinedCameraMovement;
-		bool m_MotionBlurSettingsWindow;
 		int m_MotionBlurLevel;
 		float m_MotionBlurPower;
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
