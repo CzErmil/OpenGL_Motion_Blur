@@ -104,38 +104,7 @@ namespace test
 
 		if (m_PredefinedCameraMovement)
 		{
-			m_CameraHorizontalRotationSumTime += deltaTime * m_CameraHorizontalRotationSpeed;
-			m_CameraVerticalMovementSumTime += deltaTime * m_CameraVerticalMovementSpeed;
-
-			glm::vec3 pos = glm::vec3(
-				sin(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius,
-				0.0f,
-				cos(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius
-			);
-			switch (m_CameraVerticalTypeOfMovement)
-			{
-			case 0:
-				pos = glm::vec3(pos.x, 0.0f, pos.z);
-				break;
-			case 1:
-				pos = glm::vec3(
-					pos.x,
-					sin(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
-					pos.z
-				);
-				break;
-			case 2:
-				pos = glm::vec3(
-					pos.x,
-					cos(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
-					pos.z
-				);
-				break;
-			}
-
-			m_Camera.setPosition(pos);
-
-			m_Camera.lookAt(glm::vec3(0.0f));
+			PredefinedCameraMovement(deltaTime);
 		}
 
 		m_Sphere->setPosition(m_ModelTranslation[0], m_ModelTranslation[1], m_ModelTranslation[2]);
@@ -271,6 +240,42 @@ namespace test
 		m_VertexBuffer->UpdateData(m_Sphere->getVertices().data(), m_Sphere->getSize());
 		m_IndexBuffer->UpdateBuffer(m_Sphere->getIndecies().data(), m_Sphere->getIndecies().size());
 		m_SphereChanged = 0;
+	}
+
+	void ObjectTest::PredefinedCameraMovement(double deltaTime)
+	{
+		m_CameraHorizontalRotationSumTime += deltaTime * m_CameraHorizontalRotationSpeed;
+		m_CameraVerticalMovementSumTime += deltaTime * m_CameraVerticalMovementSpeed;
+
+		glm::vec3 pos = glm::vec3(
+			sin(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius,
+			0.0f,
+			cos(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius
+		);
+		switch (m_CameraVerticalTypeOfMovement)
+		{
+		case 0:
+			pos = glm::vec3(pos.x, 0.0f, pos.z);
+			break;
+		case 1:
+			pos = glm::vec3(
+				pos.x,
+				sin(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
+				pos.z
+			);
+			break;
+		case 2:
+			pos = glm::vec3(
+				pos.x,
+				cos(m_CameraVerticalMovementSumTime) * m_CameraVerticalMovementRadius,
+				pos.z
+			);
+			break;
+		}
+
+		m_Camera.setPosition(pos);
+
+		m_Camera.lookAt(glm::vec3(0.0f));
 	}
 
 	void ObjectTest::ImGuiSetEnviromentSettings()

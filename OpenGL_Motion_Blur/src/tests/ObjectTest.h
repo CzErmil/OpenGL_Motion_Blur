@@ -106,6 +106,7 @@ namespace test
 		void calculateMovement(int typeOfMovement, int XYZ, double deltaTime);
 		void calculateRotation(double deltaTime);
 		void UpdateSphere();
+		void PredefinedCameraMovement(double deltaTime);
 
 		void ImGuiSetEnviromentSettings();
 		void ImGuiSetObjectParameters();
