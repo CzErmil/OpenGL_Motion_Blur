@@ -84,6 +84,8 @@ namespace test
 		bool m_PredefinedCameraMovement;
 		int m_MotionBlurLevel;
 		float m_MotionBlurPower;
+		bool m_DependendOnFPS;
+		double m_ConstTime;
 		int WINDOW_WIDTH, WINDOW_HEIGHT;
 	public:
 		ObjectTest();

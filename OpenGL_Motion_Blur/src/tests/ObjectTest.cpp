@@ -29,7 +29,9 @@ namespace test
 		m_RotationAxiexXYZ{},
 		m_PredefinedCameraMovement(false),
 		m_MotionBlurLevel(8),
-		m_MotionBlurPower(1.0f)
+		m_MotionBlurPower(1.0f),
+		m_DependendOnFPS(true),
+		m_ConstTime(0.005)
 	{
 		glfwGetWindowSize(glfwGetCurrentContext(), &WINDOW_WIDTH, &WINDOW_HEIGHT);
 		glfwSetWindowAttrib(glfwGetCurrentContext(), GLFW_RESIZABLE, GLFW_FALSE);
@@ -194,6 +196,8 @@ namespace test
 	void ObjectTest::calculateMovement(int typeOfMovement, int XYZ, double deltaTime)
 	{
 		m_MovementSumTimeXYZ[XYZ] += deltaTime * m_MovemnetSpeed[XYZ];
+
+		m_MovementSumTimeXYZ[XYZ] = fmod(m_MovementSumTimeXYZ[XYZ], glm::two_pi<double>());
 
 		switch (typeOfMovement)
 		{
@@ -494,6 +498,7 @@ namespace test
 
 		ImGui::SliderInt("Motion Blur Level", &m_MotionBlurLevel, 1, 100, "%d");
 		ImGui::SliderFloat("Motion Blur Power", &m_MotionBlurPower, 0.0f, 10.0f, "%.1f", 1.0f);
+		ImGui::Checkbox("Dependent on FPS", &m_DependendOnFPS);
 
 		ImGui::PopItemWidth();
 

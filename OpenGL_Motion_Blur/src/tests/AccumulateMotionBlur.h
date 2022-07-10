@@ -22,6 +22,7 @@ namespace test {
 	private:
 		std::unique_ptr<ShaderProgram> m_Program[4];
 		std::unique_ptr<FrameBuffer> m_FrameBuffer[2];
+		double avgDelta;
 	public:
 		AccumulateMotionBlur();
 		~AccumulateMotionBlur();
