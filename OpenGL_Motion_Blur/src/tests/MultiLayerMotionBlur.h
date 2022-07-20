@@ -18,15 +18,15 @@
 
 namespace test {
 
-	#define FRAME_LAYERS 16
+	#define MAX_FRAME_LAYERS 100
 
 	class MultiLayerMotionBlur : public ObjectTest
 	{
 	private:
 		std::unique_ptr<ShaderProgram> m_Program[3];
 		std::unique_ptr<FrameBuffer> m_FrameBuffer;
-		glm::mat4 m_Model[FRAME_LAYERS];
-		glm::mat4 m_MVP[FRAME_LAYERS];
+		glm::mat4 m_Model[MAX_FRAME_LAYERS];
+		glm::mat4 m_MVP[MAX_FRAME_LAYERS];
 		int m_FrameBufferLayers;
 	public:
 		MultiLayerMotionBlur();

@@ -11,7 +11,7 @@
 namespace test {
 
 	MultiLayerMotionBlur::MultiLayerMotionBlur() :
-		m_FrameBufferLayers(FRAME_LAYERS)
+		m_FrameBufferLayers(MAX_FRAME_LAYERS)
 	{
 		Shader vertexShader = Shader(GL_VERTEX_SHADER, "src/shaders/MultiLayerMotionBlur_vertex.glsl");
 		Shader geometryShader = Shader(GL_GEOMETRY_SHADER, "src/shaders/MultiLayerMotionBlur_geometry.glsl");
@@ -36,23 +36,11 @@ namespace test {
 		m_Program[0]->UseProgram();
 		m_Program[0]->SetUniform1i("u_texture", 0);
 
-		m_FrameBuffer = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA8, FRAME_LAYERS, WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_FrameBuffer = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA8, MAX_FRAME_LAYERS, WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_FrameBuffer->SetDepthBuffer();
 
 		m_Sphere = std::make_unique<Sphere>(m_Sectors, m_Stacks, 2, Surface::Smooth);
 
-		calculatePosition(m_DeltaTime);
-
-		m_View = m_Camera.getView();
-
-		m_Model[0] = m_Sphere->getModelMatrix();
-
-		for (int i = 0; i < FRAME_LAYERS; i++)
-		{
-			m_Model[i] = m_Model[0];
-
-			m_MVP[i] = m_Proj * m_View * m_Model[i];
-		}
 	}
 
 	MultiLayerMotionBlur::~MultiLayerMotionBlur()
@@ -62,16 +50,43 @@ namespace test {
 
 	void MultiLayerMotionBlur::OnUpdate(double deltaTime)
 	{
-		for (int i = FRAME_LAYERS - 1; i > 0; i--)
+		m_DeltaTime = deltaTime;
+
+		if (m_SphereChanged)
 		{
-			m_Model[i] = m_Model[i-1];
-			m_MVP[i] = m_MVP[i-1];
+			UpdateSphere();
 		}
 
-		ObjectTest::OnUpdate(deltaTime);
+		auto d = m_DependendOnFPS ? m_DeltaTime : m_ConstTime;
 
-		m_Model[0] = ObjectTest::m_Model;
-		m_MVP[0] = ObjectTest::m_MVP;
+		for (int i = m_MotionBlurLevel -1; i >= 0; i--)
+		{
+			if (i == m_MotionBlurLevel - 1)
+			{
+				calculatePosition(m_DeltaTime - (d * m_MotionBlurPower));
+
+				if (m_PredefinedCameraMovement)
+				{
+					PredefinedCameraMovement(m_DeltaTime - (d * m_MotionBlurPower));
+				}
+			}
+
+			calculatePosition(d * m_MotionBlurPower / m_MotionBlurLevel);
+
+			if (m_PredefinedCameraMovement)
+			{
+				PredefinedCameraMovement(d * m_MotionBlurPower / m_MotionBlurLevel);
+			}
+
+			m_Sphere->setPosition(m_ModelTranslation[0], m_ModelTranslation[1], m_ModelTranslation[2]);
+			m_Sphere->setRotation(m_ModelRotation[0], m_ModelRotation[1], m_ModelRotation[2]);
+			m_Sphere->setScale(m_ModelScale[0], m_ModelScale[1], m_ModelScale[2]);
+
+			m_View = m_Camera.getView();
+			m_Model[i] = m_Sphere->getModelMatrix();
+
+			m_MVP[i] = m_Proj * m_View * m_Model[i];
+		}
 	}
 
 	void MultiLayerMotionBlur::OnRender()
@@ -85,12 +100,10 @@ namespace test {
 		m_Texture->Bind(0);
 		m_Program[0]->UseProgram();
 
-		for (int i = 0; i < FRAME_LAYERS; i++)
+		for (int i = 0; i < m_MotionBlurLevel; i++)
 		{
-			glm::mat4x4 a = m_MVP[i];
-			glm::mat4x4 b = m_Model[i];
-			m_Program[0]->SetUniformMatrix4fv("u_MVP[" + std::to_string(i) + "]", a);
-			m_Program[0]->SetUniformMatrix4fv("u_Model[" + std::to_string(i) + "]", b);
+			m_Program[0]->SetUniformMatrix4fv("u_MVP[" + std::to_string(i) + "]", m_MVP[i]);
+			m_Program[0]->SetUniformMatrix4fv("u_Model[" + std::to_string(i) + "]", m_Model[i]);
 		}
 
 		m_Program[0]->SetUniform3fv("u_CameraPos", m_Camera.getPosition());
@@ -105,19 +118,23 @@ namespace test {
 		m_Program[0]->SetUniform3fv("light.diffuse", m_Light.diffuse);
 		m_Program[0]->SetUniform3fv("light.specular", m_Light.specular);
 
-		glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+		m_Program[0]->SetUniform1i("u_blurLevel", m_MotionBlurLevel);
+
+		glDrawElementsInstanced(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr, m_MotionBlurLevel);
 
 		if (m_DrawLines)
 		{
 			m_Program[1]->UseProgram();
-			for (int i = 0; i < FRAME_LAYERS; i++)
+			for (int i = 0; i < m_MotionBlurLevel; i++)
 			{
 				glm::mat4x4 a = m_MVP[i];
 				glm::mat4x4 b = m_Model[i];
 				m_Program[1]->SetUniformMatrix4fv("u_MVP[" + std::to_string(i) + "]", a);
 			}
 
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+			m_Program[1]->SetUniform1i("u_blurLevel", m_MotionBlurLevel);
+
+			glDrawElementsInstanced(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr, m_MotionBlurLevel);
 		}
 
 		m_FrameBuffer->Unbind();
@@ -127,6 +144,7 @@ namespace test {
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_Program[2]->UseProgram();
 		m_Program[2]->SetUniform1i("u_texture", 1);
+		m_Program[2]->SetUniform1i("u_blurLevel", m_MotionBlurLevel);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		m_FrameBuffer->BindTexture(1);
@@ -136,5 +154,7 @@ namespace test {
 	void MultiLayerMotionBlur::OnImGuiRender()
 	{
 		ObjectTest::OnImGuiRender();
+
+		ObjectTest::ImGuiShowMotionBlurSettings();
 	}
 }
