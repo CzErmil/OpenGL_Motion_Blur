@@ -15,10 +15,10 @@ namespace test
 		m_RotationSpeed{ ROTATIONSPEED },
 		m_Radius{ RADIUS },
 		m_DeltaTime(0),
-		m_CameraHorizontalMovementRadius(5.0f),
-		m_CameraVerticalMovementRadius(3.0f),
-		m_CameraHorizontalRotationSpeed(0.0f),
-		m_CameraVerticalMovementSumTime(1.0f),
+		m_CameraHorizontalMovementRadius(CAMERA_HORIZONTAL_MOVEMENT_RADIUS),
+		m_CameraVerticalMovementRadius(CAMERA_VERTICAL_MOVEMENT_RADIUS),
+		m_CameraHorizontalRotationSpeed(CAMETA_HORIZONTAL_ROTATION_SPEED),
+		m_CameraVerticalMovementSpeed(CAMERA_VERTICAL_MOVEMENT_SPEED),
 		m_Camera(&m_DeltaTime),
 		m_DrawLines(DRAWLINES),
 		m_Smooth(1),
@@ -27,7 +27,8 @@ namespace test
 		m_SphereChanged(true),
 		m_TypeOfMovementXYZ{},
 		m_RotationAxiexXYZ{},
-		m_PredefinedCameraMovement(false),
+		m_PredefinedCameraMovement(PREDIFINED_CAMERA_MOVEMENT),
+		m_CameraVerticalTypeOfMovement(CAMERA_VERTICAL_TYPE_OF_MOVEMENT),
 		m_MotionBlurLevel(8),
 		m_MotionBlurPower(1.0f),
 		m_DependendOnFPS(true),
@@ -183,6 +184,11 @@ namespace test
 
 	void ObjectTest::ResetCameraMovement()
 	{
+		m_CameraHorizontalMovementRadius = CAMERA_HORIZONTAL_MOVEMENT_RADIUS;
+		m_CameraVerticalMovementRadius = CAMERA_VERTICAL_MOVEMENT_RADIUS;
+		m_CameraHorizontalRotationSpeed = CAMETA_HORIZONTAL_ROTATION_SPEED;
+		m_CameraVerticalMovementSpeed = CAMERA_VERTICAL_MOVEMENT_SPEED;
+		m_CameraVerticalTypeOfMovement = CAMERA_VERTICAL_TYPE_OF_MOVEMENT;
 	}
 
 	void ObjectTest::calculatePosition(double deltaTime)
@@ -481,7 +487,7 @@ namespace test
 
 				if (ImGui::Button("Reset predefined camera movement"))
 				{
-					ResetObjectMovement();
+					ResetCameraMovement();
 				}
 			}
 		}

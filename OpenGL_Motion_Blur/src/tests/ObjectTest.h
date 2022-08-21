@@ -34,16 +34,22 @@ namespace test
 			16.0f							// shininess
 		};
 		const glm::vec4 CLEARCOLOR{ glm::vec4(0.2f, 0.2f, 0.4f, 1.0f) };
-		const glm::vec3 MODELROTATION { glm::vec3(0.0f,0.0f,0.0f) };
-		const glm::vec3 MODELTRANSLATION { glm::vec3(0.0f,0.0f,0.0f) };
+		const glm::vec3 MODELROTATION{ glm::vec3(0.0f,0.0f,0.0f) };
+		const glm::vec3 MODELTRANSLATION{ glm::vec3(0.0f,0.0f,0.0f) };
 		const glm::vec3	MODELSCALE{ glm::vec3(1.0f,1.0f,1.0f) };
-		const glm::vec3	MOVEMENTSPEED { glm::vec3(3.0f,3.0f,3.0f) };
-		const glm::vec3	ROTATIONSPEED { glm::vec3(1.0f,1.0f,1.0f) };
-		const glm::vec3	RADIUS { glm::vec3(1.0f,1.0f,1.0f) };
+		const glm::vec3	MOVEMENTSPEED{ glm::vec3(3.0f,3.0f,3.0f) };
+		const glm::vec3	ROTATIONSPEED{ glm::vec3(1.0f,1.0f,1.0f) };
+		const glm::vec3	RADIUS{ glm::vec3(1.0f,1.0f,1.0f) };
 		const bool DRAWLINES{ false };
 		const bool SMOOTH{ true };
 		const int SECTORS{ 30 };
 		const int STACKS{ 30 };
+		const float CAMERA_HORIZONTAL_MOVEMENT_RADIUS{ 5.0f };
+		const float CAMERA_VERTICAL_MOVEMENT_RADIUS{ 3.0f };
+		const float CAMETA_HORIZONTAL_ROTATION_SPEED{ 0.0f };
+		const float CAMERA_VERTICAL_MOVEMENT_SPEED{ 1.0f };
+		const bool PREDIFINED_CAMERA_MOVEMENT{ false };
+		const int CAMERA_VERTICAL_TYPE_OF_MOVEMENT{ 0 };
 	protected:
 		std::unique_ptr<VertexArrayObject> m_VAO;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
