@@ -32,6 +32,4 @@ void VertexArrayObject::AddVertexBuffer(const VertexBuffer& vertexBuffer, const 
 		offset += VertexBufferElement::GetSizeOfType(element.type)*element.count;
 		index++;
 	}
-
-
 }

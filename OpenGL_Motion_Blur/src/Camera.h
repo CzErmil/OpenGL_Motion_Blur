@@ -19,7 +19,6 @@ private:
 	float m_MovementSpeed;
 	float m_MouseSensitivity;
 public:
-
 	Camera(double* deltaTime);
 
 	glm::mat4 getView();

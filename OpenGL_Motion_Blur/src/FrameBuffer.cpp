@@ -23,19 +23,19 @@ FrameBuffer::FrameBuffer(Attachment attachment, unsigned int textureCount, int w
 	case Attachment::COLOR_RGBA16F:
 		m_ColorTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_RGBA16F, GL_RGBA, GL_UNSIGNED_BYTE);
 
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorTexture->GetID(), 0);
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_ColorTexture->GetID(), 0);
 
 		break;
 	case Attachment::COLOR_RGBA32F:
 		m_ColorTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_UNSIGNED_BYTE);
 
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorTexture->GetID(), 0);
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_ColorTexture->GetID(), 0);
 
 		break;
 	case Attachment::DEPTH:
 		m_ColorTexture = std::make_unique<Texture>(m_Target, m_TextureCount, m_Width, m_Height, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
 
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_ColorTexture->GetID(), 0);
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_ColorTexture->GetID(), 0);
 
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
