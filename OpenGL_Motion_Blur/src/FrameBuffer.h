@@ -7,6 +7,7 @@
 enum class Attachment {
 	COLOR_RGBA8,
 	COLOR_RGBA16F,
+	COLOR_RGBA32F,
 	DEPTH
 };
 

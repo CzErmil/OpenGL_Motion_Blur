@@ -37,7 +37,7 @@ namespace test {
 		m_FrameBuffer[0] = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA8, WINDOW_WIDTH, WINDOW_HEIGHT);
 		m_FrameBuffer[0]->SetDepthBuffer();
 
-		m_FrameBuffer[1] = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA16F, WINDOW_WIDTH, WINDOW_HEIGHT);
+		m_FrameBuffer[1] = std::make_unique<FrameBuffer>(Attachment::COLOR_RGBA32F, WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
 
 	AccumulateMotionBlur::~AccumulateMotionBlur()
