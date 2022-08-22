@@ -1,4 +1,4 @@
-#version 330 core
+#version 400 core
 
 in vec2 vs_textureCoord;
 
@@ -18,31 +18,27 @@ void main(void)
 
 	int n = u_blurLevel;
 
-	//float speed = length(blurVec / texelSize);
-	//n = clamp(int(speed), 1, 100);
+	dvec4 result = dvec4(0, 0, 0, 0);
 
-	vec4 result = vec4(0, 0, 0, 0);
-
-	float e = 0.00001;
+	double e = 0.00001;
 
 	if (abs(blurVec.x) > e || abs(blurVec.y) > e)
 	{
-		for (int i = 0; i < n; i++)
+		for (int i = n; i > 0; i--)
 		{
 			vec2 offset;
 			if (n > 1)
-				offset = blurVec * (float(i) / float(n - 1) - 0.5);
+				offset = - blurVec * (float(i) / float(n - 1) - 0.5);
 			else
 				offset = vec2(0, 0);
 
-			result += texture(u_texture, vs_textureCoord + offset);
+			result += dvec4(texture(u_texture, vs_textureCoord + offset)) * double(i) * 2 / double(n * n + n);
 		}
-		result /= float(n);
 	}
 	else
 	{
-		result = texture(u_texture, vs_textureCoord);
+		result = dvec4(texture(u_texture, vs_textureCoord));
 	}
 
-	color = result;
+	color = vec4(result);
 }
