@@ -57,25 +57,25 @@ namespace test {
 			UpdateSphere();
 		}
 
-		auto d = m_DependendOnFPS ? m_DeltaTime : m_ConstTime;
+		auto dt = m_DependendOnFPS ? m_DeltaTime : m_ConstTime;
 
 		for (int i = m_MotionBlurLevel -1; i >= 0; i--)
 		{
 			if (i == m_MotionBlurLevel - 1)
 			{
-				calculatePosition(m_DeltaTime - (d * m_MotionBlurPower));
+				calculatePosition(dt - (dt * m_MotionBlurPower));
 
 				if (m_PredefinedCameraMovement)
 				{
-					PredefinedCameraMovement(m_DeltaTime - (d * m_MotionBlurPower));
+					PredefinedCameraMovement(dt - (dt * m_MotionBlurPower));
 				}
 			}
 
-			calculatePosition(d * m_MotionBlurPower / m_MotionBlurLevel);
+			calculatePosition(dt * m_MotionBlurPower / m_MotionBlurLevel);
 
 			if (m_PredefinedCameraMovement)
 			{
-				PredefinedCameraMovement(d * m_MotionBlurPower / m_MotionBlurLevel);
+				PredefinedCameraMovement(dt * m_MotionBlurPower / m_MotionBlurLevel);
 			}
 
 			m_Sphere->setPosition(m_ModelTranslation[0], m_ModelTranslation[1], m_ModelTranslation[2]);
