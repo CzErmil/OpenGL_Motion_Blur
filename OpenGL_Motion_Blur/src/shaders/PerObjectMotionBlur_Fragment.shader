@@ -28,7 +28,7 @@ void main(void)
 		{
 			vec2 offset;
 			if (n > 1)
-				offset = - blurVec * (float(i) / float(n - 1) - 0.5);
+				offset = -blurVec * (float(i) / float(n) - 0.5);
 			else
 				offset = vec2(0, 0);
 
