@@ -98,7 +98,7 @@ namespace test
 	{
 		m_DeltaTime = deltaTime;
 
-		calculatePosition(deltaTime);
+		calculatePosition(m_DeltaTime);
 
 		if (m_SphereChanged)
 		{
@@ -107,7 +107,7 @@ namespace test
 
 		if (m_PredefinedCameraMovement)
 		{
-			PredefinedCameraMovement(deltaTime);
+			PredefinedCameraMovement(m_DeltaTime);
 		}
 
 		m_Sphere->setPosition(m_ModelTranslation[0], m_ModelTranslation[1], m_ModelTranslation[2]);
