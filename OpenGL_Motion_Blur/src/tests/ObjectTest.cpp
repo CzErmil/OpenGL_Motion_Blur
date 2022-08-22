@@ -15,9 +15,15 @@ namespace test
 		m_RotationSpeed{ ROTATIONSPEED },
 		m_Radius{ RADIUS },
 		m_DeltaTime(0),
+		m_PredefinedCameraMovement(PREDIFINED_CAMERA_MOVEMENT),
+		m_CameraOrbitalMovement(CAMERA_ORBITAL_MOVEMENT),
+		m_CameraOrbitalRadius(CAMERA_ORBITAL_RADIUS),
+		m_CameraOrbitalSpeed(CAMERA_ORBITAL_SPEED),
+		m_CameraHorizontalTypeOfMovement(CAMERA_HORIZONTAL_TYPE_OF_MOVEMENT),
 		m_CameraHorizontalMovementRadius(CAMERA_HORIZONTAL_MOVEMENT_RADIUS),
+		m_CameraHorizontalMovementSpeed(CAMETA_HORIZONTAL_ROTATION_SPEED),
+		m_CameraVerticalTypeOfMovement(CAMERA_VERTICAL_TYPE_OF_MOVEMENT),
 		m_CameraVerticalMovementRadius(CAMERA_VERTICAL_MOVEMENT_RADIUS),
-		m_CameraHorizontalRotationSpeed(CAMETA_HORIZONTAL_ROTATION_SPEED),
 		m_CameraVerticalMovementSpeed(CAMERA_VERTICAL_MOVEMENT_SPEED),
 		m_Camera(&m_DeltaTime),
 		m_DrawLines(DRAWLINES),
@@ -27,8 +33,6 @@ namespace test
 		m_SphereChanged(true),
 		m_TypeOfMovementXYZ{},
 		m_RotationAxiexXYZ{},
-		m_PredefinedCameraMovement(PREDIFINED_CAMERA_MOVEMENT),
-		m_CameraVerticalTypeOfMovement(CAMERA_VERTICAL_TYPE_OF_MOVEMENT),
 		m_MotionBlurLevel(8),
 		m_MotionBlurPower(1.0f),
 		m_DependendOnFPS(true),
@@ -184,11 +188,16 @@ namespace test
 
 	void ObjectTest::ResetCameraMovement()
 	{
+		m_PredefinedCameraMovement = PREDIFINED_CAMERA_MOVEMENT;
+		m_CameraOrbitalMovement = CAMERA_ORBITAL_MOVEMENT;
+		m_CameraOrbitalRadius = CAMERA_ORBITAL_RADIUS;
+		m_CameraOrbitalSpeed = CAMERA_ORBITAL_SPEED;
+		m_CameraHorizontalTypeOfMovement = CAMERA_HORIZONTAL_TYPE_OF_MOVEMENT;
 		m_CameraHorizontalMovementRadius = CAMERA_HORIZONTAL_MOVEMENT_RADIUS;
-		m_CameraVerticalMovementRadius = CAMERA_VERTICAL_MOVEMENT_RADIUS;
-		m_CameraHorizontalRotationSpeed = CAMETA_HORIZONTAL_ROTATION_SPEED;
-		m_CameraVerticalMovementSpeed = CAMERA_VERTICAL_MOVEMENT_SPEED;
+		m_CameraHorizontalMovementSpeed = CAMETA_HORIZONTAL_ROTATION_SPEED;
 		m_CameraVerticalTypeOfMovement = CAMERA_VERTICAL_TYPE_OF_MOVEMENT;
+		m_CameraVerticalMovementRadius = CAMERA_VERTICAL_MOVEMENT_RADIUS;
+		m_CameraVerticalMovementSpeed = CAMERA_VERTICAL_MOVEMENT_SPEED;
 	}
 
 	void ObjectTest::calculatePosition(double deltaTime)
@@ -254,14 +263,49 @@ namespace test
 
 	void ObjectTest::PredefinedCameraMovement(double deltaTime)
 	{
-		m_CameraHorizontalRotationSumTime += deltaTime * m_CameraHorizontalRotationSpeed;
+		m_CameraOrbitalSumTime += deltaTime * m_CameraOrbitalSpeed;
 		m_CameraVerticalMovementSumTime += deltaTime * m_CameraVerticalMovementSpeed;
+		m_CameraHorizontalMovementSumTime += deltaTime * m_CameraHorizontalMovementSpeed;
+		
+		m_CameraOrbitalSumTime = fmod(m_CameraOrbitalSumTime, glm::two_pi<double>());
+		m_CameraVerticalMovementSumTime = fmod(m_CameraVerticalMovementSumTime, glm::two_pi<double>());
+		m_CameraHorizontalMovementSumTime = fmod(m_CameraHorizontalMovementSumTime, glm::two_pi<double>());
 
-		glm::vec3 pos = glm::vec3(
-			sin(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius,
-			0.0f,
-			cos(m_CameraHorizontalRotationSumTime) * m_CameraHorizontalMovementRadius
-		);
+		glm::vec3 pos = glm::vec3();
+		if (m_CameraOrbitalMovement)
+		{
+				pos = glm::vec3(
+				sin(m_CameraOrbitalSumTime) * m_CameraOrbitalRadius,
+				0.0f,
+				cos(m_CameraOrbitalSumTime) * m_CameraOrbitalRadius
+			);
+		}
+		else
+		{
+			m_Camera.setPosition(glm::vec3(0,0,5));
+			m_Camera.lookAt(glm::vec3(0.0f));
+			pos = m_Camera.getPosition();
+			switch (m_CameraHorizontalTypeOfMovement)
+			{
+			case 0:
+				break;
+			case 1:
+				pos = glm::vec3(
+					sin(m_CameraHorizontalMovementSumTime) * m_CameraHorizontalMovementRadius,
+					pos.y,
+					pos.z
+				);
+				break;
+			case 2:
+				pos = glm::vec3(
+					cos(m_CameraHorizontalMovementSumTime) * m_CameraHorizontalMovementRadius,
+					pos.y,
+					pos.z
+				);
+				break;
+			}
+		}
+
 		switch (m_CameraVerticalTypeOfMovement)
 		{
 		case 0:
@@ -285,7 +329,10 @@ namespace test
 
 		m_Camera.setPosition(pos);
 
-		m_Camera.lookAt(glm::vec3(0.0f));
+		if (m_CameraOrbitalMovement)
+		{
+			m_Camera.lookAt(glm::vec3(0.0f));
+		}
 	}
 
 	void ObjectTest::ImGuiSetEnviromentSettings()
@@ -457,30 +504,65 @@ namespace test
 			{
 				ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.7f);
 
-				ImGui::SliderFloat("Radius of horizontal camera movement", &m_CameraHorizontalMovementRadius, 3.0f, 20.0f, "%.1f", 1.0f);
+				if (ImGui::RadioButton("Orbital movement", m_CameraOrbitalMovement == true))
+				{
+					m_CameraOrbitalMovement = true;
+				}
 
-				ImGui::SliderFloat("Horizontal rotation speed", &m_CameraHorizontalRotationSpeed, 0.0f, 10.0f, "%.1f", 1.0f);
+				if (ImGui::RadioButton("Horizontal movement", m_CameraOrbitalMovement == false))
+				{
+					m_CameraOrbitalMovement = false;
+				}
+
+				ImGui::Separator();
+
+				if (m_CameraOrbitalMovement)
+				{
+					ImGui::SliderFloat("Radius of horizontal orbital movement", &m_CameraOrbitalRadius, 3.0f, 20.0f, "%.1f", 1.0f);
+					ImGui::SliderFloat("Horizontal orbital speed", &m_CameraOrbitalSpeed, 0.0f, 10.0f, "%.1f", 1.0f);
+				}
+				else
+				{
+					ImGui::Text("Horizontal type of movement");
+
+					if (ImGui::RadioButton("h = const", m_CameraHorizontalTypeOfMovement == 0))
+					{
+						m_CameraHorizontalTypeOfMovement = 0;
+					} ImGui::SameLine();
+
+					if (ImGui::RadioButton("h = sin(t)", m_CameraHorizontalTypeOfMovement == 1))
+					{
+						m_CameraHorizontalTypeOfMovement = 1;
+					} ImGui::SameLine();
+
+					if (ImGui::RadioButton("h = cos(t)", m_CameraHorizontalTypeOfMovement == 2))
+					{
+						m_CameraHorizontalTypeOfMovement = 2;
+					}
+
+					ImGui::SliderFloat("Horizontal movmment radius", &m_CameraHorizontalMovementRadius, 0.0f, 10.0f, "%.1f", 1.0f);
+					ImGui::SliderFloat("Horizontal movement speed", &m_CameraHorizontalMovementSpeed, 0.0f, 10.0f, "%.1f", 1.0f);
+				}
 
 				ImGui::Separator();
 				ImGui::Text("Vertical type of movement");
 
-				if (ImGui::RadioButton("static", m_CameraVerticalTypeOfMovement == 0))
+				if (ImGui::RadioButton("v = const", m_CameraVerticalTypeOfMovement == 0))
 				{
 					m_CameraVerticalTypeOfMovement = 0;
 				} ImGui::SameLine();
 
-				if (ImGui::RadioButton("sin(t)", m_CameraVerticalTypeOfMovement == 1))
+				if (ImGui::RadioButton("v = sin(t)", m_CameraVerticalTypeOfMovement == 1))
 				{
 					m_CameraVerticalTypeOfMovement = 1;
 				} ImGui::SameLine();
 
-				if (ImGui::RadioButton("cos(t)", m_CameraVerticalTypeOfMovement == 2))
+				if (ImGui::RadioButton("v = cos(t)", m_CameraVerticalTypeOfMovement == 2))
 				{
 					m_CameraVerticalTypeOfMovement = 2;
 				}
 
 				ImGui::SliderFloat("Vertical movment radius", &m_CameraVerticalMovementRadius, 0.0f, 10.0f, "%.1f", 1.0f);
-
 				ImGui::SliderFloat("Vertical movement speed", &m_CameraVerticalMovementSpeed, 0.0f, 10.0f, "%.1f", 1.0f);
 
 				ImGui::PopItemWidth();
