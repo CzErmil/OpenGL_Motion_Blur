@@ -42,7 +42,7 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Motion Blur", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
