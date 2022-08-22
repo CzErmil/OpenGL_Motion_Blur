@@ -96,14 +96,14 @@ namespace test {
 
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			auto d = m_DependendOnFPS ? m_DeltaTime : m_ConstTime;
+			auto dt = m_DependendOnFPS ? m_DeltaTime : m_ConstTime;
 
 			if (i == 1)
 			{
-				calculatePosition(m_DeltaTime - (d * m_MotionBlurPower));
+				calculatePosition(dt - (dt * m_MotionBlurPower));
 			}
 
-			calculatePosition(d * m_MotionBlurPower / count);
+			calculatePosition(dt * m_MotionBlurPower / count);
 
 			m_FrameBuffer[0]->BindTexture(1);
 			m_Texture->Bind(0);
