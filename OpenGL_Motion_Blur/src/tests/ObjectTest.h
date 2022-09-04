@@ -113,9 +113,9 @@ namespace test
 		void OnRender() override;
 		void OnImGuiRender() override;
 
-		void ResetEnviromentSettings();
+		void ResetEnvironmentSettings();
 		void ResetObjectParameters();
-		void ResetSphereModyfications();
+		void ResetSphereModifications();
 		void ResetObjectMovement();
 		void ResetCameraMovement();
 
@@ -125,7 +125,7 @@ namespace test
 		void UpdateSphere();
 		void PredefinedCameraMovement(double deltaTime);
 
-		void ImGuiSetEnviromentSettings();
+		void ImGuiSetEnvironmentSettings();
 		void ImGuiSetObjectParameters();
 		void ImGuiSetSphereModifications();
 		void ImGuiSetObjectMovement();

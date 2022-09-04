@@ -85,7 +85,7 @@ int main(void)
     currentTest = testMenu;
 
     testMenu->RegisterTest<test::TestModel>("Test Model");
-    testMenu->RegisterTest<test::AccumulateMotionBlur>("Extended FrameBuffer Motion Blur");
+    testMenu->RegisterTest<test::AccumulateMotionBlur>("Extended Frame Buffer Motion Blur");
     testMenu->RegisterTest<test::MultiLayerMotionBlur>("Multi-Layer Motion Blur");
     testMenu->RegisterTest<test::CameraMotionBlur>("Camera Motion Blur");
     testMenu->RegisterTest<test::PerObjectMotionBlur>("Per-object Motion Blur");

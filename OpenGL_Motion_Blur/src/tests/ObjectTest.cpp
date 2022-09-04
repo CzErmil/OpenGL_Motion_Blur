@@ -133,7 +133,7 @@ namespace test
 	{
 		ImGui::SetWindowPos({ 0,0 });
 
-		ImGuiSetEnviromentSettings();
+		ImGuiSetEnvironmentSettings();
 		ImGuiSetObjectParameters();
 		ImGuiSetSphereModifications();
 		ImGuiSetObjectMovement();
@@ -143,16 +143,16 @@ namespace test
 
 		if (ImGui::Button("Reset all"))
 		{
-			ResetEnviromentSettings();
+			ResetEnvironmentSettings();
 			ResetObjectParameters();
-			ResetSphereModyfications();
+			ResetSphereModifications();
 			ResetObjectMovement();
 		}
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 
-	void ObjectTest::ResetEnviromentSettings()
+	void ObjectTest::ResetEnvironmentSettings()
 	{
 		m_ClearColor = CLEARCOLOR;
 		m_Light = LIGHT;
@@ -166,7 +166,7 @@ namespace test
 		m_Material = MATERIAL;
 	}
 
-	void ObjectTest::ResetSphereModyfications()
+	void ObjectTest::ResetSphereModifications()
 	{
 		m_Sectors = SECTORS;
 		m_Stacks = STACKS;
@@ -335,9 +335,9 @@ namespace test
 		}
 	}
 
-	void ObjectTest::ImGuiSetEnviromentSettings()
+	void ObjectTest::ImGuiSetEnvironmentSettings()
 	{
-		if (ImGui::CollapsingHeader("Enviroment settings", ImGuiTreeNodeFlags_None))
+		if (ImGui::CollapsingHeader("Environment settings", ImGuiTreeNodeFlags_None))
 		{
 			ImGui::ColorEdit4("Clear color", glm::value_ptr(m_ClearColor));
 			ImGui::SliderFloat3("Light direction", glm::value_ptr(m_Light.direction), -1.0f, 1.0f, "%.3f", 1.0f);
@@ -345,9 +345,9 @@ namespace test
 			ImGui::ColorEdit3("Light diffuse", glm::value_ptr(m_Light.diffuse));
 			ImGui::ColorEdit3("Light specular", glm::value_ptr(m_Light.specular));
 
-			if (ImGui::Button("Reset enviroment settings"))
+			if (ImGui::Button("Reset environment settings"))
 			{
-				ResetEnviromentSettings();
+				ResetEnvironmentSettings();
 			}
 		}
 	}
@@ -401,7 +401,7 @@ namespace test
 
 			if (ImGui::Button("Reset sphere modifications"))
 			{
-				ResetSphereModyfications();
+				ResetSphereModifications();
 			}
 		}
 	}
